@@ -1,5 +1,5 @@
 # Crash-Roads
-#### Виконуют:
+#### Виконують:
 1. Кущ Родіон ІП-62 [radikushch@gmail.com](radikushch@gmail.com)
 2. Гук Микола ІП-62 [urenad35@gmail.com](urenad35@gmail.com)
 
