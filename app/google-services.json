@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "327185437006",
+    "firebase_url": "https://crash-roads.firebaseio.com",
+    "project_id": "crash-roads",
+    "storage_bucket": "crash-roads.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327185437006:android:ad3794436d637afb",
+        "android_client_info": {
+          "package_name": "com.studing.bd.crashroads"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327185437006-c0n6jgjdgf1tu4udm1r4tpe5vh0elupt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.studing.bd.crashroads",
+            "certificate_hash": "07fa7c5a10ba8f210c9ca8fbafebbe79b9326cd9"
+          }
+        },
+        {
+          "client_id": "327185437006-l7p2681nt2scvpppd8mdqqi2q7fkf6fj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_kl06SkvgL5iZltORqZmqo3M5C_FKen4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327185437006-l7p2681nt2scvpppd8mdqqi2q7fkf6fj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
