@@ -20,4 +20,5 @@
     </string>
     <string name="action_google_sign_in">Sign in with Google</string>
     <string name="action_registration">Sign up</string>
+    <string name="title_activity_map">MapActivity</string>
 </resources>

@@ -9,12 +9,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
-//import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginManager implements ILoginManager{
     public static final int RC_SIGN_IN = 1;
     private LoginActivity loginActivity;
-    //private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -45,6 +44,7 @@ public class LoginManager implements ILoginManager{
                 }
             }
         };
+        firebaseDatabase = FirebaseDatabase.getInstance();
     }
     @Override
     public void pause() {
