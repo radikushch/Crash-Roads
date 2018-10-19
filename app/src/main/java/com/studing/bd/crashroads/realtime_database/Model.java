@@ -8,10 +8,14 @@ public class Model {
     private DatabaseReference databaseReference;
     public Model(){
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("route");
+        databaseReference = firebaseDatabase.getReference().child("routes");
     }
     public void saveRoute(Route route){
+        databaseReference.push().setValue(route);
+    }
 
+    public Route fetchRoute(){
+        return null;
     }
 
 }

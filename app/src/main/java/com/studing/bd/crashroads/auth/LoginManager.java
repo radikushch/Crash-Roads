@@ -1,24 +1,31 @@
 package com.studing.bd.crashroads.auth;
 
-import android.content.Context;
+
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.studing.bd.crashroads.R;
+import com.studing.bd.crashroads.realtime_database.MapActivity;
+import com.studing.bd.crashroads.realtime_database.MapFragment;
 
 import java.util.Arrays;
 import java.util.List;
-import com.google.firebase.database.FirebaseDatabase;
+
+
 
 public class LoginManager implements ILoginManager{
-    public static final int RC_SIGN_IN = 1;
     private LoginActivity loginActivity;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private FragmentTransaction fragmentTransaction;
+    private MapFragment mapFragment;
 
     public LoginManager(LoginActivity loginActivity){
         this.loginActivity = loginActivity;
+        mapFragment = new MapFragment();
     }
 
     public void init(){
@@ -32,20 +39,12 @@ public class LoginManager implements ILoginManager{
                 }
                 else{
                     //TODO: detach databaseListener
-                    List<AuthUI.IdpConfig> providers = Arrays.asList(
-                            new AuthUI.IdpConfig.EmailBuilder().build(),
-                            new AuthUI.IdpConfig.GoogleBuilder().build());
-                    loginActivity.startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setAvailableProviders(providers)
-                                    .build(),
-                            RC_SIGN_IN);
+                    loginActivity.startLogIn();
                 }
             }
         };
-        firebaseDatabase = FirebaseDatabase.getInstance();
     }
+
     @Override
     public void pause() {
         if(mAuthStateListener != null){
@@ -57,6 +56,5 @@ public class LoginManager implements ILoginManager{
     public void resume() {
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
-
 
 }

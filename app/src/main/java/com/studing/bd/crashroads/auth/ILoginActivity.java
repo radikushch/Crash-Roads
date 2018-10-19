@@ -4,9 +4,6 @@ import android.content.Intent;
 
 public interface ILoginActivity {
 
-    String getEmail();
-    String getPassword();
-    void showError(int errorId);
-    void startNewActivity(Intent intent);
+    void startLogIn();
 
 }
