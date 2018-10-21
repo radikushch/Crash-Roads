@@ -1,8 +1,7 @@
 package com.studing.bd.crashroads.auth;
 
+import android.content.Context;
 import android.content.Intent;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 
 public interface ILoginActivity {
 
@@ -10,5 +9,7 @@ public interface ILoginActivity {
     String getPassword();
     void showError(int errorId);
     void startNewActivity(Intent intent);
-
+    void startNewActivityForResult(Intent intent);
+    Context getContext();
+    String getStringResource(int resources);
 }

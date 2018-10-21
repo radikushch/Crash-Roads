@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 //import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int RC_SIGN_IN = 1;
+
 
     //private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth;

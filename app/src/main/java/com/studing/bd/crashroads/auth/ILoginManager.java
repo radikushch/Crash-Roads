@@ -1,9 +1,12 @@
 package com.studing.bd.crashroads.auth;
 
+import android.content.Intent;
+
 public interface ILoginManager {
     void checkUserSignedIn();
     void validateEmail();
-    void emailSignUp();
-    void emailSignIn();
-    void googleSignIn();
+    void fireBaseAuthWithEmail();
+    void fireBaseLogin();
+    void openGoogleSignInForm();
+    void fireBaseAuthWithGoogle(Intent data);
 }

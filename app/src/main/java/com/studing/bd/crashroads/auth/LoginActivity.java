@@ -1,5 +1,6 @@
 package com.studing.bd.crashroads.auth;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.google.android.gms.common.SignInButton;
 import com.studing.bd.crashroads.ErrorsContract;
 import com.studing.bd.crashroads.R;
 
+
 public class LoginActivity extends AppCompatActivity implements ILoginActivity {
 
     private AutoCompleteTextView emailTextView;
@@ -27,6 +29,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
 
     private ILoginManager loginManager;
 
+    private static final int RC_SIGN_IN = 1;
 
     @Override
     protected void onStart() {
@@ -66,21 +69,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //loginManager.login();
+                loginManager.fireBaseLogin();
             }
         });
 
         emailSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.emailSignUp();
+                loginManager.fireBaseAuthWithEmail();
             }
         });
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.googleSignIn();
+                loginManager.openGoogleSignInForm();
             }
         });
     }
@@ -134,6 +137,29 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     @Override
     public void startNewActivity(Intent intent) {
         startActivity(intent);
+    }
+
+    @Override
+    public void startNewActivityForResult(Intent intent) {
+        startActivityForResult(intent, RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN) {
+           loginManager.fireBaseAuthWithGoogle(data);
+        }
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public String getStringResource(int resources) {
+        return getString(resources);
     }
 }
 
