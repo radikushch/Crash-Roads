@@ -5,4 +5,5 @@ public interface ILoginManager {
     void validateEmail();
     void emailSignUp();
     void emailSignIn();
+    void googleSignIn();
 }

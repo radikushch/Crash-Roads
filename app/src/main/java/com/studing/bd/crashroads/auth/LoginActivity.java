@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.SignInButton;
 import com.studing.bd.crashroads.ErrorsContract;
 import com.studing.bd.crashroads.R;
 
@@ -21,7 +22,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
 
     private AutoCompleteTextView emailTextView;
     private EditText passwordEditText;
-    private Button signInButton, googleSignInButton, emailSignUpButton;
+    private Button signInButton, emailSignUpButton;
+    private SignInButton googleSignInButton;
 
     private ILoginManager loginManager;
 
@@ -46,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         passwordEditText = findViewById(R.id.password);
         signInButton = findViewById(R.id.email_sign_in_button);
         googleSignInButton = findViewById(R.id.google_sign_in_button);
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         emailSignUpButton = findViewById(R.id.sign_up_button);
     }
 
@@ -77,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //loginManager.googleSignUp();
+                loginManager.googleSignIn();
             }
         });
     }

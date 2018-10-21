@@ -2,9 +2,11 @@ package com.studing.bd.crashroads.auth;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -75,7 +77,23 @@ public class LoginManager implements ILoginManager{
     public void emailSignIn() {
         String email = loginActivity.getEmail();
         String password = loginActivity.getPassword();
+        mFireBaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mFireBaseAuth.getCurrentUser();
+                            updateUI(user);
+                        } else {
+                            updateUI(null);
+                        }
+                    }
+                });
+    }
 
+    @Override
+    public void googleSignIn() {
+        Intent signInIntent =
     }
 
 
