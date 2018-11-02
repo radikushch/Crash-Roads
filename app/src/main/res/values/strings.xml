@@ -8,7 +8,7 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -22,5 +22,8 @@
     <string name="action_registration">Sign up</string>
     <string name="prompt_name">Name</string>
     <string name="registration_sign_up_button">Sign Up</string>
+    <string name="welcome_message">Welcome to Crash Roads</string>
+    <string name="welcome_caption_message">Sign in to continue</string>
+    <string name="sign_in_as_guest_text_view">Guest</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth;
+package com.studing.bd.crashroads.auth.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
-import com.studing.bd.crashroads.ErrorsContract;
 import com.studing.bd.crashroads.R;
 
 
@@ -24,8 +23,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
 
     private AutoCompleteTextView emailTextView;
     private EditText passwordEditText;
-    private Button signInButton, emailSignUpButton;
+    private Button signInButton;
     private SignInButton googleSignInButton;
+    private TextView emailSignUpButton;
 
     private ILoginManager loginManager;
 
@@ -38,10 +38,17 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loginManager.detachLoginActivity();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginManager = new LoginManager(this);
+        loginManager = new LoginManager();
+        loginManager.attachLoginActivity(this);
         initViews();
         listenersSettings();
     }
@@ -69,21 +76,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.fireBaseLogin();
+                loginManager.login();
             }
         });
 
         emailSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.fireBaseAuthWithEmail();
+                loginManager.signUp();
             }
         });
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.openGoogleSignInForm();
+                loginManager.chooseGoogleUser();
             }
         });
     }
@@ -99,44 +106,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     }
 
     @Override
-    public void showError(int errorId) {
-        switch(errorId) {
-            case ErrorsContract.LoginErrors.WRONG_EMAIL_ADDRESS:
-                showEmailError();
-                break;
-            case ErrorsContract.LoginErrors.WRONG_PASSWORD:
-                showPasswordError();
-                break;
-            case ErrorsContract.LoginErrors.USER_IS_ALREADY_EXISTS:
-                showNoSuchUserError();
-                break;
-            case ErrorsContract.LoginErrors.NO_SUCH_USER:
-                showUserIsExistsError();
-                break;
-        }
-    }
-
-    private void showNoSuchUserError() {
-        Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
-    }
-
-    private void showUserIsExistsError() {
-        Toast.makeText(this, "Such user is already exists", Toast.LENGTH_SHORT).show();
-    }
-
-    private void showPasswordError() {
-        Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show();
-        passwordEditText.setError("Error");
-    }
-
-    private void showEmailError() {
-        Toast.makeText(this, "Incorrect email", Toast.LENGTH_SHORT).show();
-        emailTextView.setError("Error");
+    public void showError(String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void startNewActivity(Intent intent) {
         startActivity(intent);
+        finish();
     }
 
     @Override
@@ -148,7 +125,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN) {
-           loginManager.fireBaseAuthWithGoogle(data);
+           loginManager.googleLogin(data);
         }
     }
 
