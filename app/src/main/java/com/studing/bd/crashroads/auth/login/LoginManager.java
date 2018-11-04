@@ -194,11 +194,12 @@ public class LoginManager implements ILoginManager {
      */
     private void updateUI(FirebaseUser currentUser) {
         if(currentUser != null) {
-            Intent intent = new Intent(loginActivity.getContext(), MainActivity.class);
-            loginActivity.startNewActivity(intent);
-        }
-        if(currentUser.isAnonymous()) {
+            if(currentUser.isAnonymous()) {
 
+            }else {
+                Intent intent = new Intent(loginActivity.getContext(), MainActivity.class);
+                loginActivity.startNewActivity(intent);
+            }
         }
     }
 }

@@ -8,6 +8,6 @@ public interface IRegistrationManager {
     void attachRegistrationActivity(IRegistrationActivity registrationActivity);
     void detachRegistrationActivity();
     void emailSignUp();
-
+    void loadProfilePicture();
 
 }

@@ -59,7 +59,7 @@
         android:id="@+id/registration_password_2_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/prompt_password"
+        android:hint="@string/prompt_repeat_password"
         android:inputType="textPassword" />
 
 </android.support.design.widget.TextInputLayout>
@@ -111,8 +111,7 @@
             android:id="@+id/registration_profile_photo"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/fui_ic_googleg_color_24dp"
-            app:civ_border_width="1dp" />
+            android:src="@drawable/fui_ic_googleg_color_24dp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/registration_add_picture"

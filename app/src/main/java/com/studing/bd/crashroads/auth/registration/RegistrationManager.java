@@ -9,15 +9,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 import com.studing.bd.crashroads.MainActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegistrationManager implements IRegistrationManager {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class RegistrationManager implements IRegistrationManager, RegistrationActivity.LoadPictureCallback {
 
     private IRegistrationActivity registrationActivity;
     private FirebaseAuth mFireBaseAuth;
+
+    private static final String SELECT_PICTURE_ACTION = "Select Picture";
 
 
     public RegistrationManager(){
@@ -47,6 +52,7 @@ public class RegistrationManager implements IRegistrationManager {
         }
     }
 
+
     private boolean userInfoIsCorrect(String email, String password1, String password2) {
         Pattern validEmailAddressRegex =
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -71,6 +77,29 @@ public class RegistrationManager implements IRegistrationManager {
                          }
                     });
         }
+
+    @Override
+    public void loadProfilePicture() {
+        registrationActivity.registerLoadPictureCallback(this);
+        pickImage();
+    }
+
+    private void pickImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
+    }
+
+    @Override
+    public void loadPicture(CircleImageView container, Intent data) {
+        Picasso.get()
+                .load(data.getData())
+                .noPlaceholder()
+                .centerCrop()
+                .fit()
+                .into(container);
+    }
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
