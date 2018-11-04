@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -164,6 +165,28 @@ public class LoginManager implements ILoginManager {
         loginActivity.startNewActivity(intent);
     }
 
+    /**
+     * Anonymous login
+     */
+    @Override
+    public void anonymousLogin() {
+        mFireBaseAuth.signInAnonymously()
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()) {
+                            FirebaseUser user = mFireBaseAuth.getCurrentUser();
+                            updateUI(user);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loginActivity.showError(e.getMessage());
+                    }
+                });
+    }
+
 
     /**
         Update Ui or change activity after authentication
@@ -173,6 +196,9 @@ public class LoginManager implements ILoginManager {
         if(currentUser != null) {
             Intent intent = new Intent(loginActivity.getContext(), MainActivity.class);
             loginActivity.startNewActivity(intent);
+        }
+        if(currentUser.isAnonymous()) {
+
         }
     }
 }

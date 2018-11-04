@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     private EditText passwordEditText;
     private Button signInButton;
     private SignInButton googleSignInButton;
-    private TextView emailSignUpButton;
+    private TextView emailSignUpButton, guestSignInButton;
 
     private ILoginManager loginManager;
 
@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         googleSignInButton = findViewById(R.id.google_sign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         emailSignUpButton = findViewById(R.id.sign_up_button);
+        guestSignInButton = findViewById(R.id.guest_button);
     }
 
     private void listenersSettings() {
@@ -91,6 +92,13 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
             @Override
             public void onClick(View v) {
                 loginManager.chooseGoogleUser();
+            }
+        });
+
+        guestSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginManager.anonymousLogin();
             }
         });
     }

@@ -13,4 +13,5 @@ public interface ILoginManager {
     void chooseGoogleUser();
     void googleLogin(Intent data);
     void signUp();
+    void anonymousLogin();
 }
