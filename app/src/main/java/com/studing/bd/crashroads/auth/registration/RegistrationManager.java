@@ -1,7 +1,12 @@
 package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -11,15 +16,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.studing.bd.crashroads.MainActivity;
+import com.studing.bd.crashroads.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.internal.Util;
 
-public class RegistrationManager implements IRegistrationManager, RegistrationActivity.LoadPictureCallback {
+public class RegistrationManager implements IRegistrationManager, RegistrationModel.UriCallback {
 
     private IRegistrationActivity registrationActivity;
+    private RegistrationModel registrationModel;
     private FirebaseAuth mFireBaseAuth;
 
     private static final String SELECT_PICTURE_ACTION = "Select Picture";
@@ -27,6 +36,7 @@ public class RegistrationManager implements IRegistrationManager, RegistrationAc
 
     public RegistrationManager(){
         mFireBaseAuth = FirebaseAuth.getInstance();
+        registrationModel = new RegistrationModel();
     }
 
     @Override
@@ -45,19 +55,28 @@ public class RegistrationManager implements IRegistrationManager, RegistrationAc
         String password1 = registrationActivity.getPassword1();
         String password2 = registrationActivity.getPassword2();
         String name = registrationActivity.getName();
-        if(userInfoIsCorrect(email, password1, password2)) {
-            fireBaseSignUp(email, password1, name);
+        if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
+            createUser(email, password1, name);
         }else{
             registrationActivity.showError("Input correct data");
         }
     }
 
+    private void createUser(String email, String password1, String name) {
+        fireBaseSignUp(email, password1, name);
+        byte[] imageData = getByteArrayFromImage(registrationActivity.getUserPhotoBitmap());
+        registrationModel.uploadPhoto(imageData, name + Utils.getDateStamp(), this);
+    }
 
-    private boolean userInfoIsCorrect(String email, String password1, String password2) {
-        Pattern validEmailAddressRegex =
-                Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = validEmailAddressRegex.matcher(email);
-        return password1.equals(password2) && matcher.matches();
+    @Override
+    public void apply(Uri uri) {
+        String email = registrationActivity.getEmail();
+        String password1 = registrationActivity.getPassword1();
+        String name = registrationActivity.getName();
+        addUserToDatabase(email, password1, name, uri);
+    }
+
+    private void addUserToDatabase(String email, String password1, String name, Uri uri) {
     }
 
     private void fireBaseSignUp(String email, String password, String name) {
@@ -76,11 +95,16 @@ public class RegistrationManager implements IRegistrationManager, RegistrationAc
                             registrationActivity.showError(e.getMessage());
                          }
                     });
-        }
+    }
+
+    private byte[] getByteArrayFromImage(Bitmap userPhotoBitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        userPhotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
 
     @Override
     public void loadProfilePicture() {
-        registrationActivity.registerLoadPictureCallback(this);
         pickImage();
     }
 
@@ -91,20 +115,12 @@ public class RegistrationManager implements IRegistrationManager, RegistrationAc
         registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
     }
 
-    @Override
-    public void loadPicture(CircleImageView container, Intent data) {
-        Picasso.get()
-                .load(data.getData())
-                .noPlaceholder()
-                .centerCrop()
-                .fit()
-                .into(container);
-    }
-
     private void updateUI(FirebaseUser user) {
         if(user != null) {
             Intent intent = new Intent(registrationActivity.getContext(), MainActivity.class);
             registrationActivity.startNewActivity(intent);
         }
     }
+
+   
 }

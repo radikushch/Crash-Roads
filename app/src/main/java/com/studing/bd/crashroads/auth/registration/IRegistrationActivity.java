@@ -2,9 +2,10 @@ package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 public interface IRegistrationActivity {
-    void registerLoadPictureCallback(RegistrationActivity.LoadPictureCallback callback);
     String getEmail();
     String getPassword1();
     String getPassword2();
@@ -13,4 +14,6 @@ public interface IRegistrationActivity {
     void startNewActivity(Intent intent);
     void startNewActivityForResult(Intent intent, String action);
     Context getContext();
+
+    Bitmap getUserPhotoBitmap();
 }

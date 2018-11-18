@@ -2,6 +2,8 @@ package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,16 +21,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegistrationActivity extends AppCompatActivity implements IRegistrationActivity {
 
-
-    public interface LoadPictureCallback {
-        void loadPicture(CircleImageView container, Intent data);
-    }
-
     private IRegistrationManager registrationManager;
     private EditText emailEditText, password1EditText, password2EditText, nameEditText;
     private CircleImageView profilePhotoImageView;
     private static final int RC_SELECT_PICTURE = 0;
-    private LoadPictureCallback loadPictureCallback;
 
     @Override
     protected void onDestroy() {
@@ -59,6 +55,8 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
         });
 
         profilePhotoImageView = findViewById(R.id.registration_profile_photo);
+        profilePhotoImageView.setDrawingCacheEnabled(true);
+        profilePhotoImageView.buildDrawingCache();
         FloatingActionButton addProfilePictureButton = findViewById(R.id.registration_add_picture);
         addProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,10 +66,6 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
         });
     }
 
-    @Override
-    public void registerLoadPictureCallback(LoadPictureCallback callback) {
-        loadPictureCallback = callback;
-    }
 
     @Override
     public String getEmail() {
@@ -122,5 +116,10 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    public Bitmap getUserPhotoBitmap() {
+        return ((BitmapDrawable) profilePhotoImageView.getDrawable()).getBitmap();
     }
 }
