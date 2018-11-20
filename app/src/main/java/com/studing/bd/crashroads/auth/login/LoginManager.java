@@ -22,8 +22,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 import com.studing.bd.crashroads.MainActivity;
 import com.studing.bd.crashroads.R;
+import com.studing.bd.crashroads.User;
 import com.studing.bd.crashroads.auth.registration.RegistrationActivity;
 
 import java.util.regex.Matcher;
@@ -34,10 +36,12 @@ public class LoginManager implements ILoginManager {
 
     private ILoginActivity loginActivity;
     private FirebaseAuth mFireBaseAuth;
+    private LoginModel loginModel;
     private static final String EMAIL_VALIDATION_ERROR = "Invalid email format";
 
     public LoginManager(){
         mFireBaseAuth = FirebaseAuth.getInstance();
+        loginModel = new LoginModel();
     }
 
     @Override
@@ -143,8 +147,9 @@ public class LoginManager implements ILoginManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                            updateUI(user);
+                            FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
+                            loginModel.createUser(firebaseUser);
+                            updateUI(firebaseUser);
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

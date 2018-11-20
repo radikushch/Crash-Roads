@@ -14,8 +14,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.studing.bd.crashroads.MainActivity;
+import com.studing.bd.crashroads.User;
 import com.studing.bd.crashroads.Utils;
 
 import java.io.ByteArrayOutputStream;
@@ -31,12 +33,14 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
     private RegistrationModel registrationModel;
     private FirebaseAuth mFireBaseAuth;
 
+
     private static final String SELECT_PICTURE_ACTION = "Select Picture";
 
 
     public RegistrationManager(){
         mFireBaseAuth = FirebaseAuth.getInstance();
         registrationModel = new RegistrationModel();
+
     }
 
     @Override
@@ -54,53 +58,60 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         String email = registrationActivity.getEmail();
         String password1 = registrationActivity.getPassword1();
         String password2 = registrationActivity.getPassword2();
-        String name = registrationActivity.getName();
         if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
-            createUser(email, password1, name);
+            createUser(email, password1);
         }else{
             registrationActivity.showError("Input correct data");
         }
     }
 
-    private void createUser(String email, String password1, String name) {
-        fireBaseSignUp(email, password1, name);
-        byte[] imageData = getByteArrayFromImage(registrationActivity.getUserPhotoBitmap());
-        registrationModel.uploadPhoto(imageData, name + Utils.getDateStamp(), this);
+    private void createUser(String email, String password1) {
+        fireBaseSignUp(email, password1);
     }
 
-    @Override
-    public void apply(Uri uri) {
-        String email = registrationActivity.getEmail();
-        String password1 = registrationActivity.getPassword1();
-        String name = registrationActivity.getName();
-        addUserToDatabase(email, password1, name, uri);
-    }
-
-    private void addUserToDatabase(String email, String password1, String name, Uri uri) {
-    }
-
-    private void fireBaseSignUp(String email, String password, String name) {
+    private void fireBaseSignUp(String email, String password) {
         mFireBaseAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                                updateUI(user);
-                            }
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            onAuthSuccess();
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                         public void onFailure(@NonNull Exception e) {
-                            registrationActivity.showError(e.getMessage());
-                         }
-                    });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        registrationActivity.showError(e.getMessage());
+                    }
+                });
+    }
+
+    private void onAuthSuccess() {
+        Bitmap photoBitmap = registrationActivity.getUserPhotoBitmap();
+        byte[] data = getByteArrayFromImage(photoBitmap);
+        registrationModel.uploadPhoto(data, registrationActivity.getName() + Utils.getDateStamp(), this);
     }
 
     private byte[] getByteArrayFromImage(Bitmap userPhotoBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         userPhotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return baos.toByteArray();
+    }
+
+    @Override
+    public void handleUriCallback(Uri uri) {
+        FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
+        User user = new User();
+        user.setUsername(registrationActivity.getName());
+        user.setEmail(firebaseUser.getEmail());
+        user.setImage(String.valueOf(uri));
+        String userId = firebaseUser.getUid();
+        saveUserToDatabase(user, userId);
+        updateUI(user);
+    }
+
+    private void saveUserToDatabase(User user, String userId) {
+        registrationModel.addNewUser(user, userId);
     }
 
     @Override
@@ -115,12 +126,11 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
     }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateUI(User user) {
         if(user != null) {
             Intent intent = new Intent(registrationActivity.getContext(), MainActivity.class);
             registrationActivity.startNewActivity(intent);
         }
     }
 
-   
 }
