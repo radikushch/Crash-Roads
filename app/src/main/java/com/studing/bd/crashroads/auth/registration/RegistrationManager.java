@@ -2,11 +2,8 @@ package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -14,18 +11,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 import com.studing.bd.crashroads.MainActivity;
 import com.studing.bd.crashroads.User;
 import com.studing.bd.crashroads.Utils;
 
 import java.io.ByteArrayOutputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.internal.Util;
 
 public class RegistrationManager implements IRegistrationManager, RegistrationModel.UriCallback {
 
@@ -76,6 +66,7 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             onAuthSuccess();
+                            sendEmailVerification();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -84,6 +75,22 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
                         registrationActivity.showError(e.getMessage());
                     }
                 });
+    }
+
+    private void sendEmailVerification() {
+        mFireBaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    registrationActivity.showError("Verify your email address");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                registrationActivity.showError(e.getMessage());
+            }
+        });
     }
 
     private void onAuthSuccess() {
@@ -107,7 +114,7 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         user.setImage(String.valueOf(uri));
         String userId = firebaseUser.getUid();
         saveUserToDatabase(user, userId);
-        updateUI(user);
+        updateUI(firebaseUser);
     }
 
     private void saveUserToDatabase(User user, String userId) {
@@ -126,11 +133,8 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
     }
 
-    private void updateUI(User user) {
-        if(user != null) {
-            Intent intent = new Intent(registrationActivity.getContext(), MainActivity.class);
-            registrationActivity.startNewActivity(intent);
-        }
+    private void updateUI(FirebaseUser user) {
+        registrationActivity.stop();
     }
 
 }

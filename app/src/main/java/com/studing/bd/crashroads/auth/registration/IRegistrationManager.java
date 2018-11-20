@@ -9,4 +9,5 @@ public interface IRegistrationManager {
     void detachRegistrationActivity();
     void emailSignUp();
     void loadProfilePicture();
+
 }

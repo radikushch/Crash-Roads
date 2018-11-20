@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.User;
+import com.studing.bd.crashroads.auth.login.LoginActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -125,5 +126,12 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @Override
     public Bitmap getUserPhotoBitmap() {
         return ((BitmapDrawable) profilePhotoImageView.getDrawable()).getBitmap();
+    }
+
+    @Override
+    public void stop() {
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+
     }
 }

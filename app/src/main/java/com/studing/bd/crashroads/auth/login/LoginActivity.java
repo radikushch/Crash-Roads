@@ -32,8 +32,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     private static final int RC_SIGN_IN = 1;
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         loginManager.checkUserSignedIn();
     }
 

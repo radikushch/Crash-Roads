@@ -16,4 +16,6 @@ public interface IRegistrationActivity {
     Context getContext();
 
     Bitmap getUserPhotoBitmap();
+
+    void stop();
 }

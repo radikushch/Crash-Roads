@@ -57,7 +57,14 @@ public class LoginManager implements ILoginManager {
     @Override
     public void checkUserSignedIn() {
         FirebaseUser currentUser = mFireBaseAuth.getCurrentUser();
-        updateUI(currentUser);
+        if(currentUser != null) {
+            currentUser.reload();
+            if(currentUser.isEmailVerified()) {
+                updateUI(currentUser);
+            }else {
+                loginActivity.showError("Verify your email address");
+            }
+        }
     }
 
     @Override
@@ -92,7 +99,16 @@ public class LoginManager implements ILoginManager {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                            updateUI(user);
+                            if (user != null) {
+                                if(!user.isEmailVerified()) {
+                                    loginActivity.showError("Verify your email address");
+                                }else {
+                                    updateUI(user);
+                                }
+                            }else {
+                                loginActivity.showError("No such user");
+                            }
+
                         }
                     }
                 })
