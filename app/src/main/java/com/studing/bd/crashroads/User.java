@@ -1,7 +1,5 @@
 package com.studing.bd.crashroads;
 
-import android.net.Uri;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
@@ -12,6 +10,24 @@ public class User {
     private String image;
     private int drivingExperience;
     private String country;
+    private int age;
+
+    protected User() {
+
+    }
+
+    private User(String username, String email, String image, int drivingExperience, String country, int age) {
+        this.username = username;
+        this.email = email;
+        this.image = image;
+        this.drivingExperience = drivingExperience;
+        this.country = country;
+        this.age = age;
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
 
     public String getUsername() {
         return username;
@@ -53,15 +69,51 @@ public class User {
         this.country = country;
     }
 
-    public User() {
-
+    public int getAge() {
+        return age;
     }
 
-    public User(String username, String email, String image, int drivingExperience, String country) {
-        this.username = username;
-        this.email = email;
-        this.image = image;
-        this.drivingExperience = drivingExperience;
-        this.country = country;
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public static class UserBuilder {
+
+        private String username;
+        private String email;
+        private String image;
+        private int drivingExperience;
+        private String country;
+        private int age;
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder image(String image) {
+            this.image = image;
+            return this;
+        }
+
+        public UserBuilder drivingExperience(int drivingExperience) {
+            this.drivingExperience = drivingExperience;
+            return this;
+        }
+
+        public UserBuilder country(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public UserBuilder age(int age) {
+            this.age = age;
+            return this;
+        }
     }
 }
