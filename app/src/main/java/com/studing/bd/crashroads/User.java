@@ -1,80 +1,48 @@
 package com.studing.bd.crashroads;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
+@Entity
 @IgnoreExtraProperties
 public class User {
 
-    private String username;
-    private String email;
-    private String image;
-    private int drivingExperience;
-    private String country;
-    private int age;
+    @PrimaryKey
+    public int uid;
+    @ColumnInfo(name = "name")
+    public String username;
+    @ColumnInfo(name = "email")
+    public String email;
+    @ColumnInfo(name = "image_url")
+    public String image;
+    @ColumnInfo(name = "driving_exp")
+    public int drivingExperience;
+    @ColumnInfo(name = "country")
+    public String country;
+    @ColumnInfo(name = "birthday_date")
+    public String birthdayDate;
+    @ColumnInfo(name = "gender")
+    public Gender gender;
 
     protected User() {
 
     }
 
-    private User(String username, String email, String image, int drivingExperience, String country, int age) {
-        this.username = username;
-        this.email = email;
-        this.image = image;
-        this.drivingExperience = drivingExperience;
-        this.country = country;
-        this.age = age;
+    private User(UserBuilder builder) {
+        this.username = builder.username;
+        this.email = builder.email;
+        this.image = builder.image;
+        this.drivingExperience = builder.drivingExperience;
+        this.country = builder.country;
+        this.birthdayDate = builder.birthdayDate;
+        this.gender = builder.gender;
     }
 
     public static UserBuilder builder() {
         return new UserBuilder();
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public int getDrivingExperience() {
-        return drivingExperience;
-    }
-
-    public void setDrivingExperience(int drivingExperience) {
-        this.drivingExperience = drivingExperience;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public static class UserBuilder {
@@ -84,7 +52,8 @@ public class User {
         private String image;
         private int drivingExperience;
         private String country;
-        private int age;
+        private String birthdayDate;
+        private Gender gender;
 
         public UserBuilder username(String username) {
             this.username = username;
@@ -111,9 +80,18 @@ public class User {
             return this;
         }
 
-        public UserBuilder age(int age) {
-            this.age = age;
+        public UserBuilder birthdayDate(String birthdayDate) {
+            this.birthdayDate = birthdayDate;
             return this;
+        }
+
+        public UserBuilder gender(Gender gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
         }
     }
 }

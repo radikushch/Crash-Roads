@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,13 +24,21 @@ import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.User;
 import com.studing.bd.crashroads.auth.login.LoginActivity;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegistrationActivity extends AppCompatActivity implements IRegistrationActivity {
 
     private IRegistrationManager registrationManager;
-    private EditText emailEditText, password1EditText, password2EditText, nameEditText;
-    private CircleImageView profilePhotoImageView;
+    @BindView(R.id.registration_email_input) EditText emailEditText;
+    @BindView(R.id.registration_password_1_input) EditText password1EditText;
+    @BindView(R.id.registration_password_2_input) EditText password2EditText;
+    @BindView(R.id.registration_name_input) EditText nameEditText;
+    @BindView(R.id.registration_male_rb) RadioButton maleRadioButton;
+    @BindView(R.id.registration_female_rb) RadioButton femaleRadioButton;
+    @BindView(R.id.registration_driving_exp_input) EditText drivingExpEditText;
+    @BindView(R.id.registration_profile_photo) CircleImageView profilePhotoImageView;
     private static final int RC_SELECT_PICTURE = 0;
 
     @Override
@@ -41,16 +51,13 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        ButterKnife.bind(this);
         registrationManager = new RegistrationManager();
         registrationManager.attachRegistrationActivity(this);
         initViews();
     }
 
     private void initViews() {
-        emailEditText = findViewById(R.id.registration_email_input);
-        password1EditText = findViewById(R.id.registration_password_1_input);
-        password2EditText = findViewById(R.id.registration_password_2_input);
-        nameEditText = findViewById(R.id.registration_name_input);
         Button signUpButton = findViewById(R.id.registration_sign_up);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +65,6 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
                 registrationManager.emailSignUp();
             }
         });
-
-        profilePhotoImageView = findViewById(R.id.registration_profile_photo);
         profilePhotoImageView.setDrawingCacheEnabled(true);
         profilePhotoImageView.buildDrawingCache();
         FloatingActionButton addProfilePictureButton = findViewById(R.id.registration_add_picture);
@@ -90,6 +95,21 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @Override
     public String getName() {
         return String.valueOf(nameEditText.getText());
+    }
+
+    @Override
+    public boolean isMale() {
+        return maleRadioButton.isChecked();
+    }
+
+    @Override
+    public boolean isFemale() {
+        return femaleRadioButton.isChecked();
+    }
+
+    @Override
+    public int getDrivingExperience() {
+        return Integer.parseInt(String.valueOf(drivingExpEditText.getText()));
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.studing.bd.crashroads.MainActivity;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.User;
+import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.auth.registration.RegistrationActivity;
 
 import java.util.regex.Matcher;
@@ -70,21 +71,10 @@ public class LoginManager implements ILoginManager {
     @Override
     public void validateEmail() {
         String email = loginActivity.getEmail();
-        if(!emailIsCorrect(email)){
+        if(!Utils.isEmailCorrect(email))
             loginActivity.showError(EMAIL_VALIDATION_ERROR);
-        }
     }
 
-    private boolean emailIsCorrect(String email) {
-        Pattern validEmailAddressRegex =
-                Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = validEmailAddressRegex.matcher(email);
-        return matcher.matches();
-    }
-
-    /**
-     * Email login to account
-     */
     @Override
     public void login() {
         String email = loginActivity.getEmail();

@@ -10,6 +10,9 @@ public interface IRegistrationActivity {
     String getPassword1();
     String getPassword2();
     String getName();
+    boolean isMale();
+    boolean isFemale();
+    int getDrivingExperience();
     void showError(String message);
     void startNewActivity(Intent intent);
     void startNewActivityForResult(Intent intent, String action);

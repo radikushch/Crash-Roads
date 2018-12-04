@@ -108,10 +108,11 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
     @Override
     public void handleUriCallback(Uri uri) {
         FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
-        User user = new User();
-        user.setUsername(registrationActivity.getName());
-        user.setEmail(firebaseUser.getEmail());
-        user.setImage(String.valueOf(uri));
+        User user = User.builder()
+                .username(registrationActivity.getName())
+                .email(firebaseUser.getEmail())
+                .image(String.valueOf(uri))
+                .build();
         String userId = firebaseUser.getUid();
         saveUserToDatabase(user, userId);
         updateUI(firebaseUser);

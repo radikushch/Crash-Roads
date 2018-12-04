@@ -16,10 +16,11 @@ public class LoginModel {
     }
 
     public void createUser(FirebaseUser firebaseUser) {
-        User user = new User();
-        user.setUsername(firebaseUser.getDisplayName());
-        user.setEmail(firebaseUser.getEmail());
-        user.setImage(String.valueOf(firebaseUser.getPhotoUrl()));
+        User user = User.builder()
+                .username(firebaseUser.getDisplayName())
+                .email(firebaseUser.getEmail())
+                .image(String.valueOf(firebaseUser.getPhotoUrl()))
+                .build();
         String userId = firebaseUser.getUid();
         addToDatabase(user, userId);
     }
