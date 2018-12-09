@@ -1,8 +1,7 @@
 package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -11,13 +10,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.studing.bd.crashroads.MainActivity;
-import com.studing.bd.crashroads.User;
+import com.studing.bd.crashroads.auth.registration.ui.IRegistrationActivity;
+import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
+import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.Utils;
 
-import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
-public class RegistrationManager implements IRegistrationManager, RegistrationModel.UriCallback {
+public class RegistrationManager implements IRegistrationManager {
 
     private IRegistrationActivity registrationActivity;
     private RegistrationModel registrationModel;
@@ -27,20 +27,10 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
     private static final String SELECT_PICTURE_ACTION = "Select Picture";
 
 
-    public RegistrationManager(){
+    public RegistrationManager(RegistrationActivity registrationActivity){
         mFireBaseAuth = FirebaseAuth.getInstance();
         registrationModel = new RegistrationModel();
-
-    }
-
-    @Override
-    public void attachRegistrationActivity(IRegistrationActivity registrationActivity) {
         this.registrationActivity = registrationActivity;
-    }
-
-    @Override
-    public void detachRegistrationActivity() {
-        registrationActivity = null;
     }
 
     @Override
@@ -49,15 +39,12 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         String password1 = registrationActivity.getPassword1();
         String password2 = registrationActivity.getPassword2();
         if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
-            createUser(email, password1);
+            fireBaseSignUp(email, password1);
         }else{
             registrationActivity.showError("Input correct data");
         }
     }
 
-    private void createUser(String email, String password1) {
-        fireBaseSignUp(email, password1);
-    }
 
     private void fireBaseSignUp(String email, String password) {
         mFireBaseAuth.createUserWithEmailAndPassword(email, password)
@@ -65,8 +52,10 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            onAuthSuccess();
                             sendEmailVerification();
+                            User user = createUser(mFireBaseAuth.getCurrentUser());
+                            registrationModel.saveUserToLocalDatabase(user);
+                            updateUI();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -78,63 +67,49 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
     }
 
     private void sendEmailVerification() {
-        mFireBaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    registrationActivity.showError("Verify your email address");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Objects.requireNonNull(mFireBaseAuth.getCurrentUser()).sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        registrationActivity.showError("Verify your email address");
+                    }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                registrationActivity.showError(e.getMessage());
-            }
-        });
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    registrationActivity.showError(e.getMessage());
+                }
+            });
+        }
     }
 
-    private void onAuthSuccess() {
-        Bitmap photoBitmap = registrationActivity.getUserPhotoBitmap();
-        byte[] data = getByteArrayFromImage(photoBitmap);
-        registrationModel.uploadPhoto(data, registrationActivity.getName() + Utils.getDateStamp(), this);
-    }
-
-    private byte[] getByteArrayFromImage(Bitmap userPhotoBitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        userPhotoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return baos.toByteArray();
-    }
-
-    @Override
-    public void handleUriCallback(Uri uri) {
-        FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
-        User user = User.builder()
+    private User createUser(FirebaseUser currentUser) {
+        return User.builder()
+                .uid(currentUser.getUid())
+                .email(registrationActivity.getEmail())
                 .username(registrationActivity.getName())
-                .email(firebaseUser.getEmail())
-                .image(String.valueOf(uri))
+                .birthdayDate(registrationActivity.getBirthDayDate())
+                .gender(registrationActivity.getGender())
+                .drivingExperience(registrationActivity.getDrivingExperience())
+                .country(Utils.getUserCountry(registrationActivity.getContext()))
+                .imageByte(Utils.bitmapToArray(registrationActivity.getUserPhotoBitmap()))
                 .build();
-        String userId = firebaseUser.getUid();
-        saveUserToDatabase(user, userId);
-        updateUI(firebaseUser);
-    }
-
-    private void saveUserToDatabase(User user, String userId) {
-        registrationModel.addNewUser(user, userId);
     }
 
     @Override
     public void loadProfilePicture() {
-        pickImage();
+        openGallery();
     }
 
-    private void pickImage() {
+    private void openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
     }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateUI() {
         registrationActivity.stop();
     }
 

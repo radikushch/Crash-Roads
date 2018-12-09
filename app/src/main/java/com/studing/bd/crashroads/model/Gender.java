@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads;
+package com.studing.bd.crashroads.model;
 
 public enum Gender {
 

@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth.login;
+package com.studing.bd.crashroads.auth.login.ui;
 
 import android.content.Context;
 import android.content.Intent;

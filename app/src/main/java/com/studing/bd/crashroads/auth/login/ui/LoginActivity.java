@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth.login;
+package com.studing.bd.crashroads.auth.login.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +17,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.studing.bd.crashroads.R;
+import com.studing.bd.crashroads.Utils;
+import com.studing.bd.crashroads.auth.login.ILoginManager;
+import com.studing.bd.crashroads.auth.login.LoginManager;
+import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
+import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
 
 
-public class LoginActivity extends AppCompatActivity implements ILoginActivity {
+public class LoginActivity extends AppCompatActivity implements ILoginActivity,
+        LoginMiddleware.LoginErrorNotificator {
 
     private AutoCompleteTextView emailTextView;
     private EditText passwordEditText;
@@ -38,17 +44,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        loginManager.detachLoginActivity();
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginManager = new LoginManager();
-        loginManager.attachLoginActivity(this);
+        loginManager = new LoginManager(this);
         initViews();
         listenersSettings();
     }
@@ -145,6 +144,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     @Override
     public String getStringResource(int resources) {
         return getString(resources);
+    }
+
+    @Override
+    public void handleChainError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 }
 

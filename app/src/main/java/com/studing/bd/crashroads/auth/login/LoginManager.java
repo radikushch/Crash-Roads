@@ -2,12 +2,8 @@ package com.studing.bd.crashroads.auth.login;
 
 
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,15 +18,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.FirebaseDatabase;
 import com.studing.bd.crashroads.MainActivity;
 import com.studing.bd.crashroads.R;
-import com.studing.bd.crashroads.User;
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.auth.registration.RegistrationActivity;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
+import com.studing.bd.crashroads.auth.login.ui.LoginActivity;
+import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
 
 
 public class LoginManager implements ILoginManager {
@@ -40,39 +33,18 @@ public class LoginManager implements ILoginManager {
     private LoginModel loginModel;
     private static final String EMAIL_VALIDATION_ERROR = "Invalid email format";
 
-    public LoginManager(){
+    public LoginManager(ILoginActivity loginActivity){
+        this.loginActivity = loginActivity;
         mFireBaseAuth = FirebaseAuth.getInstance();
         loginModel = new LoginModel();
-    }
-
-    @Override
-    public void attachLoginActivity(ILoginActivity loginActivity) {
-        this.loginActivity = loginActivity;
-    }
-
-    @Override
-    public void detachLoginActivity() {
-        loginActivity = null;
     }
 
     @Override
     public void checkUserSignedIn() {
         FirebaseUser currentUser = mFireBaseAuth.getCurrentUser();
         if(currentUser != null) {
-            currentUser.reload();
-            if(currentUser.isEmailVerified()) {
-                updateUI(currentUser);
-            }else {
-                loginActivity.showError("Verify your email address");
-            }
+            updateUI(currentUser);
         }
-    }
-
-    @Override
-    public void validateEmail() {
-        String email = loginActivity.getEmail();
-        if(!Utils.isEmailCorrect(email))
-            loginActivity.showError(EMAIL_VALIDATION_ERROR);
     }
 
     @Override
@@ -88,17 +60,14 @@ public class LoginManager implements ILoginManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                            if (user != null) {
-                                if(!user.isEmailVerified()) {
-                                    loginActivity.showError("Verify your email address");
-                                }else {
-                                    updateUI(user);
-                                }
-                            }else {
-                                loginActivity.showError("No such user");
+                            FirebaseUser currentUser = mFireBaseAuth.getCurrentUser();
+                            if(currentUser != null && !currentUser.isEmailVerified()) {
+                                loginActivity.showError("Verify email");
+                                mFireBaseAuth.signOut();
                             }
-
+                            else {
+                                loginModel.createUserWithEmail(new LoginActivity());
+                            }
                         }
                     }
                 })
@@ -140,7 +109,8 @@ public class LoginManager implements ILoginManager {
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try{
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            fireBaseGoogleLogin(account);
+            if (account != null)
+                fireBaseGoogleLogin(account);
         } catch (ApiException e) {
            loginActivity.showError(e.getMessage());
         }
@@ -153,9 +123,7 @@ public class LoginManager implements ILoginManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
-                            loginModel.createUser(firebaseUser);
-                            updateUI(firebaseUser);
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -212,5 +180,12 @@ public class LoginManager implements ILoginManager {
                 loginActivity.startNewActivity(intent);
             }
         }
+    }
+
+    @Override
+    public void validateEmail() {
+        String email = loginActivity.getEmail();
+        if(!Utils.isEmailCorrect(email))
+            loginActivity.showError(EMAIL_VALIDATION_ERROR);
     }
 }

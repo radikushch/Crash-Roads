@@ -33,6 +33,6 @@
     <string name="prompt_male">Male</string>
     <string name="prompt_female">Female</string>
     <string name="prompt_driving_exp">Driving experience</string>
-    <string name="prompt_age">Age</string>
+    <string name="prompt_birthday_date">Birthday date</string>
 
 </resources>

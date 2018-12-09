@@ -1,44 +1,63 @@
-package com.studing.bd.crashroads;
+package com.studing.bd.crashroads.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @Entity
 @IgnoreExtraProperties
 public class User {
 
+    @NonNull
     @PrimaryKey
-    public int uid;
+    @Exclude
+    public String uid;
+
     @ColumnInfo(name = "name")
     public String username;
+
     @ColumnInfo(name = "email")
     public String email;
-    @ColumnInfo(name = "image_url")
-    public String image;
+
+    @Ignore
+    public String imageUrl;
+
+    @Exclude
+    @ColumnInfo(name = "image_byte", typeAffinity = ColumnInfo.BLOB)
+    public byte[] imageByte;
+
     @ColumnInfo(name = "driving_exp")
     public int drivingExperience;
+
     @ColumnInfo(name = "country")
     public String country;
+
     @ColumnInfo(name = "birthday_date")
     public String birthdayDate;
-    @ColumnInfo(name = "gender")
-    public Gender gender;
 
-    protected User() {
+    @ColumnInfo(name = "gender")
+    public String gender;
+
+    public User() {
 
     }
 
     private User(UserBuilder builder) {
+        this.uid = builder.uid;
         this.username = builder.username;
         this.email = builder.email;
-        this.image = builder.image;
+        this.imageByte = builder.imageByte;
+        this.imageUrl = builder.imageUrl;
         this.drivingExperience = builder.drivingExperience;
         this.country = builder.country;
         this.birthdayDate = builder.birthdayDate;
-        this.gender = builder.gender;
+        if(builder.gender == Gender.MALE) this.gender = "m";
+        if(builder.gender == Gender.FEMALE) this.gender = "f";
     }
 
     public static UserBuilder builder() {
@@ -47,13 +66,21 @@ public class User {
 
     public static class UserBuilder {
 
+        private String uid;
         private String username;
         private String email;
-        private String image;
+        private byte[] imageByte;
+        private String imageUrl;
         private int drivingExperience;
         private String country;
         private String birthdayDate;
         private Gender gender;
+
+
+        public UserBuilder uid(String uid) {
+            this.uid = uid;
+            return this;
+        }
 
         public UserBuilder username(String username) {
             this.username = username;
@@ -65,8 +92,13 @@ public class User {
             return this;
         }
 
-        public UserBuilder image(String image) {
-            this.image = image;
+        public UserBuilder imageByte(byte[] imageByte) {
+            this.imageByte = imageByte;
+            return this;
+        }
+
+        public UserBuilder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 

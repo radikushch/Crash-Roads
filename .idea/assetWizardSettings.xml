@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/baseline_face_black_18dp.png" />
-                                      <entry key="outputName" value="ic_action_face" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/2x/baseline_calendar_today_black_18dp.png" />
+                                      <entry key="outputName" value="ic_action_calendar" />
                                     </map>
                                   </option>
                                 </PersistentState>
