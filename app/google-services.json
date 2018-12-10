@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "327185437006-uaujnjt5eqpck2m0675hg7gn48gdd7dv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.studing.bd.crashroads",
+            "certificate_hash": "c0a1a8b4b7f1fb850d27bc297384ea3f46f37271"
+          }
+        },
+        {
           "client_id": "327185437006-l7p2681nt2scvpppd8mdqqi2q7fkf6fj.apps.googleusercontent.com",
           "client_type": 3
         }

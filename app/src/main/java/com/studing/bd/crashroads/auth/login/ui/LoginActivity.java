@@ -1,5 +1,6 @@
-package com.studing.bd.crashroads.auth;
+package com.studing.bd.crashroads.auth.login.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,17 +15,33 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.studing.bd.crashroads.ErrorsContract;
+import com.google.android.gms.common.SignInButton;
 import com.studing.bd.crashroads.R;
+import com.studing.bd.crashroads.Utils;
+import com.studing.bd.crashroads.auth.login.ILoginManager;
+import com.studing.bd.crashroads.auth.login.LoginManager;
+import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
+import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
 
-public class LoginActivity extends AppCompatActivity implements ILoginActivity {
+
+public class LoginActivity extends AppCompatActivity implements ILoginActivity,
+        LoginMiddleware.LoginErrorNotificator {
 
     private AutoCompleteTextView emailTextView;
     private EditText passwordEditText;
-    private Button signInButton, googleSignInButton, emailSignUpButton;
+    private Button signInButton;
+    private SignInButton googleSignInButton;
+    private TextView emailSignUpButton, guestSignInButton;
 
     private ILoginManager loginManager;
 
+    private static final int RC_SIGN_IN = 1;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loginManager.checkUserSignedIn();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +57,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         passwordEditText = findViewById(R.id.password);
         signInButton = findViewById(R.id.email_sign_in_button);
         googleSignInButton = findViewById(R.id.google_sign_in_button);
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         emailSignUpButton = findViewById(R.id.sign_up_button);
+        guestSignInButton = findViewById(R.id.guest_button);
     }
 
     private void listenersSettings() {
@@ -64,14 +83,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
         emailSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.emailSignUp();
+                loginManager.signUp();
             }
         });
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginManager.googleSignUp();
+                loginManager.chooseGoogleUser();
+            }
+        });
+
+        guestSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginManager.anonymousLogin();
             }
         });
     }
@@ -87,44 +113,42 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity {
     }
 
     @Override
-    public void showError(int errorId) {
-        switch(errorId) {
-            case ErrorsContract.LoginErrors.WRONG_EMAIL_ADDRESS:
-                showEmailError();
-                break;
-            case ErrorsContract.LoginErrors.WRONG_PASSWORD:
-                showPasswordError();
-                break;
-            case ErrorsContract.LoginErrors.USER_IS_ALREADY_EXISTS:
-                showNoSuchUserError();
-                break;
-            case ErrorsContract.LoginErrors.NO_SUCH_USER:
-                showUserIsExistsError();
-                break;
-        }
-    }
-
-    private void showNoSuchUserError() {
-        Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
-    }
-
-    private void showUserIsExistsError() {
-        Toast.makeText(this, "Such user is already exists", Toast.LENGTH_SHORT).show();
-    }
-
-    private void showPasswordError() {
-        Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show();
-        passwordEditText.setError("Error");
-    }
-
-    private void showEmailError() {
-        Toast.makeText(this, "Incorrect email", Toast.LENGTH_SHORT).show();
-        emailTextView.setError("Error");
+    public void showError(String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void startNewActivity(Intent intent) {
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void startNewActivityForResult(Intent intent) {
+        startActivityForResult(intent, RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN) {
+           loginManager.googleLogin(data);
+        }
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public String getStringResource(int resources) {
+        return getString(resources);
+    }
+
+    @Override
+    public void handleChainError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 }
 
