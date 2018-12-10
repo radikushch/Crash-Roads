@@ -12,7 +12,7 @@ public interface IRegistrationActivity {
     String getPassword2();
     String getName();
     Gender getGender();
-    int getDrivingExperience();
+    String getDrivingExperience();
     String getBirthDayDate();
 
     void showError(String message);

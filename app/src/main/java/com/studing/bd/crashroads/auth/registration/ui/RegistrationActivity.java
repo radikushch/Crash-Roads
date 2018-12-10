@@ -134,8 +134,8 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     }
 
     @Override
-    public int getDrivingExperience() {
-        return Integer.parseInt(String.valueOf(drivingExpEditText.getText()));
+    public String getDrivingExperience() {
+        return String.valueOf(drivingExpEditText.getText());
     }
 
     @Override

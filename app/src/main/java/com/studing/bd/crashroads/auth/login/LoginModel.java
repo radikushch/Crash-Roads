@@ -14,11 +14,11 @@ import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
 import com.studing.bd.crashroads.auth.login.authChain.image.UploadPhotoMiddleware;
 import com.studing.bd.crashroads.auth.login.authChain.image.DownloadPhotoUriMiddleware;
 import com.studing.bd.crashroads.auth.login.authChain.remote.SaveRemoteUserMiddleware;
+import com.studing.bd.crashroads.model.User;
 
 public class LoginModel {
 
     public void createUserWithEmail(final LoginMiddleware.LoginErrorNotificator loginErrorNotificator) {
-
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("users")
@@ -50,5 +50,25 @@ public class LoginModel {
         download.linkWith(save);
         save.linkWith(delete);
         return root;
+    }
+
+    public void createUserWithGoogle(final User user, final LoginMiddleware.LoginErrorNotificator loginErrorNotificator) {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null) {
+                    new SaveRemoteUserMiddleware(loginErrorNotificator).checkNext(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                loginErrorNotificator.handleChainError(databaseError.getMessage());
+            }
+        });
     }
 }

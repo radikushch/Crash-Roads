@@ -24,6 +24,7 @@ import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
 import com.studing.bd.crashroads.auth.login.ui.LoginActivity;
 import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
+import com.studing.bd.crashroads.model.User;
 
 
 public class LoginManager implements ILoginManager {
@@ -99,7 +100,6 @@ public class LoginManager implements ILoginManager {
         loginActivity.startNewActivityForResult(signInIntent);
     }
 
-
     /**
      * login google account
      * @param data intent with account class
@@ -123,6 +123,12 @@ public class LoginManager implements ILoginManager {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
+                            FirebaseUser firebaseUser = mFireBaseAuth.getCurrentUser();
+                            if(firebaseUser != null) {
+                                User user = createUser(mFireBaseAuth.getCurrentUser());
+                                loginModel.createUserWithGoogle(user, new LoginActivity());
+                                updateUI(firebaseUser);
+                            }
 
                         }
                     }
@@ -132,6 +138,15 @@ public class LoginManager implements ILoginManager {
                         loginActivity.showError(e.getMessage());
                     }
                 });
+    }
+
+    private User createUser(FirebaseUser currentUser) {
+        return User.builder()
+                .uid(currentUser.getUid())
+                .email(currentUser.getEmail())
+                .username(currentUser.getDisplayName())
+                .imageUrl(String.valueOf(currentUser.getPhotoUrl()))
+                .build();
     }
 
 

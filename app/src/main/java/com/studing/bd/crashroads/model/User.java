@@ -32,7 +32,7 @@ public class User {
     public byte[] imageByte;
 
     @ColumnInfo(name = "driving_exp")
-    public int drivingExperience;
+    public String drivingExperience;
 
     @ColumnInfo(name = "country")
     public String country;
@@ -71,7 +71,7 @@ public class User {
         private String email;
         private byte[] imageByte;
         private String imageUrl;
-        private int drivingExperience;
+        private String drivingExperience;
         private String country;
         private String birthdayDate;
         private Gender gender;
@@ -102,7 +102,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder drivingExperience(int drivingExperience) {
+        public UserBuilder drivingExperience(String drivingExperience) {
             this.drivingExperience = drivingExperience;
             return this;
         }
