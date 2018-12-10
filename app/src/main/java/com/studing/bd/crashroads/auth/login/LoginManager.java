@@ -68,6 +68,7 @@ public class LoginManager implements ILoginManager {
                             }
                             else {
                                 loginModel.createUserWithEmail(new LoginActivity());
+                                updateUI(currentUser);
                             }
                         }
                     }
