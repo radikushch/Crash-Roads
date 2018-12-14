@@ -11,7 +11,7 @@ public interface IRegistrationActivity {
     String getPassword1();
     String getPassword2();
     String getName();
-    Gender getGender();
+    String getSurname();
     String getDrivingExperience();
     String getBirthDayDate();
 

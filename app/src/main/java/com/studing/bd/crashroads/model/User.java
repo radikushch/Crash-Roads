@@ -19,7 +19,10 @@ public class User {
     public String uid;
 
     @ColumnInfo(name = "name")
-    public String username;
+    public String name;
+
+    @ColumnInfo(name = "surname")
+    public String surname;
 
     @ColumnInfo(name = "email")
     public String email;
@@ -40,24 +43,20 @@ public class User {
     @ColumnInfo(name = "birthday_date")
     public String birthdayDate;
 
-    @ColumnInfo(name = "gender")
-    public String gender;
-
     public User() {
 
     }
 
     private User(UserBuilder builder) {
         this.uid = builder.uid;
-        this.username = builder.username;
+        this.name = builder.name;
+        this.surname = builder.surname;
         this.email = builder.email;
         this.imageByte = builder.imageByte;
         this.imageUrl = builder.imageUrl;
         this.drivingExperience = builder.drivingExperience;
         this.country = builder.country;
         this.birthdayDate = builder.birthdayDate;
-        if(builder.gender == Gender.MALE) this.gender = "m";
-        if(builder.gender == Gender.FEMALE) this.gender = "f";
     }
 
     public static UserBuilder builder() {
@@ -67,14 +66,14 @@ public class User {
     public static class UserBuilder {
 
         private String uid;
-        private String username;
+        private String name;
+        private String surname;
         private String email;
         private byte[] imageByte;
         private String imageUrl;
         private String drivingExperience;
         private String country;
         private String birthdayDate;
-        private Gender gender;
 
 
         public UserBuilder uid(String uid) {
@@ -82,10 +81,16 @@ public class User {
             return this;
         }
 
-        public UserBuilder username(String username) {
-            this.username = username;
+        public UserBuilder name(String name) {
+            this.name = name;
             return this;
         }
+
+        public UserBuilder surname(String surname) {
+            this.surname = surname;
+            return this;
+        }
+
 
         public UserBuilder email(String email) {
             this.email = email;
@@ -114,11 +119,6 @@ public class User {
 
         public UserBuilder birthdayDate(String birthdayDate) {
             this.birthdayDate = birthdayDate;
-            return this;
-        }
-
-        public UserBuilder gender(Gender gender) {
-            this.gender = gender;
             return this;
         }
 

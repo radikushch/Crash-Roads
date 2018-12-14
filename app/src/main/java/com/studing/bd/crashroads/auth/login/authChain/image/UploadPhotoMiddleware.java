@@ -38,7 +38,7 @@ public class UploadPhotoMiddleware extends LoginMiddleware {
 
     private void uploadPhoto(User user) {
         byte[] data = user.imageByte;
-        String caption = user.username + Utils.getDateStamp();
+        String caption = user.name + Utils.getDateStamp();
         uploadPhotoToFireBaseStorage(data, caption);
     }
 

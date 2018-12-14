@@ -17,33 +17,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/picture_layout"
+            <include
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:layout_gravity="center"
-                app:layout_constraintBottom_toTopOf="@+id/registration_email"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="spread_inside">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/registration_profile_photo"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_action_person" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/registration_add_picture"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="bottom|end"
-                    android:src="@drawable/ic_action_camera" />
-            </FrameLayout>
-
+                layout="@layout/registration_profile_picture_edit"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_action_face"
-                    android:layout_weight="0.001"
+                    android:layout_weight="0.002"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"/>
 
@@ -160,13 +138,27 @@
                     android:id="@+id/registration_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.999">
+                    android:layout_weight="0.499">
 
                     <EditText
                         android:id="@+id/registration_name_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_name"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_surname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.499">
+
+                    <EditText
+                        android:id="@+id/registration_surname_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/prompt_surname"
                         android:inputType="text" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -200,47 +192,6 @@
                         android:inputType="date" />
                 </android.support.design.widget.TextInputLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-
-                <ImageView
-                    android:id="@+id/sex_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_action_gender"
-                    android:layout_weight="0.001"
-                    android:layout_gravity="center"
-                    android:layout_margin="8dp"/>
-
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_weight="0.999"
-                    android:weightSum="1">
-
-                    <RadioButton
-                        android:id="@+id/registration_male_rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/prompt_male"
-                        android:layout_weight="0.5"/>
-
-                    <RadioButton
-                        android:id="@+id/registration_female_rb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="@string/prompt_female" />
-
-                </RadioGroup>
             </LinearLayout>
 
             <LinearLayout

@@ -145,7 +145,7 @@ public class LoginManager implements ILoginManager {
         return User.builder()
                 .uid(currentUser.getUid())
                 .email(currentUser.getEmail())
-                .username(currentUser.getDisplayName())
+                .name(currentUser.getDisplayName())
                 .imageUrl(String.valueOf(currentUser.getPhotoUrl()))
                 .build();
     }

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp">
+
+        <EditText
+            android:id="@+id/profile_name"
+            style="@style/MyEditText.Title.NotUnderline"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@id/profile_age"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="John Harris,"
+            android:inputType="text"
+            />
+
+        <EditText
+            android:id="@+id/profile_age"
+            style="@style/MyEditText.Title.NotUnderline"
+            tools:text="23"
+            app:layout_constraintStart_toEndOf="@id/profile_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/profile_name"
+            android:inputType="numberDecimal"
+
+        />
+
+        <View
+            android:id="@+id/barrier"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDevider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_name"
+            android:layout_marginTop="16dp"
+            />
+
+        <TextView
+            android:id="@+id/email_const"
+            style="@style/MyEditText.Title.NotUnderline"
+            android:text="@string/profile_email_caption"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@id/location_const"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <EditText
+            android:id="@+id/profile_email"
+            style="@style/MyEditText.Simple.NotUnderline"
+            tools:text="radikushch@gmail.com"
+            app:layout_constraintStart_toEndOf="@id/email_const"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/email_const"
+            app:layout_constraintBottom_toBottomOf="@id/email_const"
+            android:inputType="textEmailAddress"
+                />
+
+        <TextView
+            android:id="@+id/location_const"
+            style="@style/MyEditText.Title.NotUnderline"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/profile_location_caption"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_const"
+            app:layout_constraintBottom_toTopOf="@id/exp_const"
+
+            />
+
+        <EditText
+            android:id="@+id/profile_location"
+            style="@style/MyEditText.Simple.NotUnderline"
+            tools:text="Ukraine"
+            app:layout_constraintStart_toEndOf="@id/location_const"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/location_const"
+            app:layout_constraintBottom_toBottomOf="@id/location_const"
+
+        />
+        <TextView
+            android:id="@+id/exp_const"
+            style="@style/MyEditText.Title.NotUnderline"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/profile_exp_caption"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/location_const"
+            app:layout_constraintBottom_toTopOf="@id/profile_edit"
+            />
+
+        <EditText
+            android:id="@+id/profile_exp"
+            style="@style/MyEditText.Simple.NotUnderline"
+            tools:text="5"
+            app:layout_constraintStart_toEndOf="@id/exp_const"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/exp_const"
+            app:layout_constraintBottom_toBottomOf="@id/exp_const"
+            android:inputType="numberDecimal"
+            />
+
+        <Button
+            android:id="@+id/profile_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:text="@string/profile_edit_button_caption"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/exp_const"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Button
+            android:id="@+id/profile_edit_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:visibility="invisible"
+            android:text="@string/profile_edit_cancel_button_caption"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profile_edit_save"
+            app:layout_constraintTop_toTopOf="@id/profile_edit"
+            app:layout_constraintBottom_toBottomOf="@id/profile_edit"
+            />
+
+        <Button
+            android:id="@+id/profile_edit_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/oval_button"
+            android:visibility="invisible"
+            android:text="@string/profile_edit_ave_button_caption"
+            app:layout_constraintStart_toEndOf="@id/profile_edit_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/profile_edit"
+            app:layout_constraintBottom_toBottomOf="@id/profile_edit"
+            />
+
+</android.support.constraint.ConstraintLayout>

@@ -36,8 +36,7 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @BindView(R.id.registration_password_1_input) EditText password1EditText;
     @BindView(R.id.registration_password_2_input) EditText password2EditText;
     @BindView(R.id.registration_name_input) EditText nameEditText;
-    @BindView(R.id.registration_male_rb) RadioButton maleRadioButton;
-    @BindView(R.id.registration_female_rb) RadioButton femaleRadioButton;
+    @BindView(R.id.registration_surname_input) EditText surnameEditText;
     @BindView(R.id.registration_driving_exp_input) EditText drivingExpEditText;
     @BindView(R.id.registration_date_input) EditText dateEditText;
     @BindView(R.id.registration_profile_photo) CircleImageView profilePhotoImageView;
@@ -127,10 +126,8 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     }
 
     @Override
-    public Gender getGender() {
-        if(maleRadioButton.isChecked()) return Gender.MALE;
-        else if(femaleRadioButton.isChecked()) return Gender.FEMALE;
-        return null;
+    public String getSurname() {
+        return String.valueOf(surnameEditText.getText());
     }
 
     @Override

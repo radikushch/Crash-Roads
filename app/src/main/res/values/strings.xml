@@ -30,9 +30,15 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_repeat_password">Repeat password</string>
     <string name="prompt_name">Name</string>
-    <string name="prompt_male">Male</string>
-    <string name="prompt_female">Female</string>
+    <string name="prompt_surname">Surname</string>
     <string name="prompt_driving_exp">Driving experience</string>
     <string name="prompt_birthday_date">Birthday date</string>
+    <string name="profile_email_caption">Email:</string>
+    <string name="profile_location_caption">Location:</string>
+    <string name="profile_age_caption">Age:</string>
+    <string name="profile_exp_caption">Driving experience:</string>
+    <string name="profile_edit_button_caption">Edit</string>
+    <string name="profile_edit_cancel_button_caption">Cancel</string>
+    <string name="profile_edit_ave_button_caption">Save</string>
 
 </resources>
