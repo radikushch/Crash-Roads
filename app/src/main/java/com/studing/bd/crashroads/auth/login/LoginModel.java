@@ -8,43 +8,43 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.studing.bd.crashroads.auth.login.authChain.local.DeleteLocalUserMiddleware;
-import com.studing.bd.crashroads.auth.login.authChain.local.LoadLocalUserMiddleware;
-import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
-import com.studing.bd.crashroads.auth.login.authChain.image.UploadPhotoMiddleware;
-import com.studing.bd.crashroads.auth.login.authChain.image.DownloadPhotoUriMiddleware;
-import com.studing.bd.crashroads.auth.login.authChain.remote.SaveRemoteUserMiddleware;
+import com.studing.bd.crashroads.ErrorHandler;
+import com.studing.bd.crashroads.database.local_database.services.DeleteLocalUserService;
+import com.studing.bd.crashroads.database.local_database.services.QueryLocalUserService;
+import com.studing.bd.crashroads.database.DatabaseMiddleware;
+import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.database.remote_database.services.UploadPhotoMiddleware;
+import com.studing.bd.crashroads.database.remote_database.services.DownloadPhotoUriMiddleware;
+import com.studing.bd.crashroads.database.remote_database.services.SaveRemoteUserMiddleware;
 import com.studing.bd.crashroads.model.User;
 
 public class LoginModel {
 
-    public void createUserWithEmail(final LoginMiddleware.LoginErrorNotificator loginErrorNotificator) {
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("users")
+    public void createUserWithEmail(final ErrorHandler loginErrorNotificator) {
+        DatabaseReference ref = FirebaseInstant.userReference()
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) {
-                    LoginMiddleware chain = buildChain(loginErrorNotificator);
+                    DatabaseMiddleware chain = buildChain(loginErrorNotificator);
                     chain.checkNext(null);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                loginErrorNotificator.handleChainError(databaseError.getMessage());
+                loginErrorNotificator.handleError(databaseError.getMessage());
             }
         });
     }
 
-    private LoginMiddleware buildChain(LoginMiddleware.LoginErrorNotificator loginErrorNotificator) {
-        LoginMiddleware root = new LoadLocalUserMiddleware(loginErrorNotificator);
-        LoginMiddleware upload = new UploadPhotoMiddleware(loginErrorNotificator);
-        LoginMiddleware download = new DownloadPhotoUriMiddleware(loginErrorNotificator);
-        LoginMiddleware save = new SaveRemoteUserMiddleware(loginErrorNotificator);
-        LoginMiddleware delete = new DeleteLocalUserMiddleware(loginErrorNotificator);
+    private DatabaseMiddleware buildChain(ErrorHandler errorHandler) {
+        DatabaseMiddleware root = new QueryLocalUserService(errorHandler, null);
+        DatabaseMiddleware upload = new UploadPhotoMiddleware(errorHandler);
+        DatabaseMiddleware download = new DownloadPhotoUriMiddleware(errorHandler);
+        DatabaseMiddleware save = new SaveRemoteUserMiddleware(errorHandler);
+        DatabaseMiddleware delete = new DeleteLocalUserService(errorHandler);
         root.linkWith(upload);
         upload.linkWith(download);
         download.linkWith(save);
@@ -52,7 +52,7 @@ public class LoginModel {
         return root;
     }
 
-    public void createUserWithGoogle(final User user, final LoginMiddleware.LoginErrorNotificator loginErrorNotificator) {
+    public void createUserWithGoogle(final User user, final ErrorHandler loginErrorNotificator) {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("users")
@@ -67,7 +67,7 @@ public class LoginModel {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                loginErrorNotificator.handleChainError(databaseError.getMessage());
+                loginErrorNotificator.handleError(databaseError.getMessage());
             }
         });
     }

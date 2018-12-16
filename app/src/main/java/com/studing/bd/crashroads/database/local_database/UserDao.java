@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth.database;
+package com.studing.bd.crashroads.database.local_database;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

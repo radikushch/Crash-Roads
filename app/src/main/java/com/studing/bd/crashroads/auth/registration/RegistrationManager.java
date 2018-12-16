@@ -10,8 +10,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.studing.bd.crashroads.auth.registration.ui.IRegistrationActivity;
-import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
+import com.studing.bd.crashroads.ui.registration.IRegistrationActivity;
+import com.studing.bd.crashroads.ui.registration.RegistrationActivity;
 import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.Utils;
 
@@ -41,7 +41,7 @@ public class RegistrationManager implements IRegistrationManager {
         if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
             fireBaseSignUp(email, password1);
         }else{
-            registrationActivity.showError("Input correct data");
+            registrationActivity.handleError("Input correct data");
         }
     }
 
@@ -54,14 +54,14 @@ public class RegistrationManager implements IRegistrationManager {
                         if (task.isSuccessful()) {
                             sendEmailVerification();
                             User user = createUser(mFireBaseAuth.getCurrentUser());
-                            registrationModel.saveUserToLocalDatabase(user);
+                            registrationModel.saveUserToLocalDatabase(user, registrationActivity);
                             updateUI();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        registrationActivity.showError(e.getMessage());
+                        registrationActivity.handleError(e.getMessage());
                     }
                 });
     }
@@ -72,13 +72,13 @@ public class RegistrationManager implements IRegistrationManager {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()) {
-                        registrationActivity.showError("Verify your email address");
+                        registrationActivity.handleError("Verify your email address");
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    registrationActivity.showError(e.getMessage());
+                    registrationActivity.handleError(e.getMessage());
                 }
             });
         }

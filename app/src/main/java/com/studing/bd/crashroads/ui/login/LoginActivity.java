@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth.login.ui;
+package com.studing.bd.crashroads.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,16 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
+import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.R;
-import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.auth.login.ILoginManager;
 import com.studing.bd.crashroads.auth.login.LoginManager;
-import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
-import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
 
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivity,
-        LoginMiddleware.LoginErrorNotificator {
+        ErrorHandler {
 
     private AutoCompleteTextView emailTextView;
     private EditText passwordEditText;
@@ -147,8 +145,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
     }
 
     @Override
-    public void handleChainError(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    public void handleError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
 

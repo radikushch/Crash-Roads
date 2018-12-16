@@ -1,23 +1,25 @@
-package com.studing.bd.crashroads.auth.login.authChain.remote;
+package com.studing.bd.crashroads.database.remote_database.services;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
+import com.studing.bd.crashroads.ErrorHandler;
+import com.studing.bd.crashroads.database.DatabaseMiddleware;
 import com.studing.bd.crashroads.model.User;
 
-public class SaveRemoteUserMiddleware extends LoginMiddleware {
+public class SaveRemoteUserMiddleware extends DatabaseMiddleware {
 
     private DatabaseReference databaseReference;
     private User user;
+    private final static String TAG = "login Error";
 
-    public SaveRemoteUserMiddleware(LoginErrorNotificator loginErrorNotificator) {
-        super(loginErrorNotificator);
+
+    public SaveRemoteUserMiddleware(ErrorHandler errorHandler) {
+        super(errorHandler);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("users");
     }
@@ -35,6 +37,7 @@ public class SaveRemoteUserMiddleware extends LoginMiddleware {
 
     private void saveUserToDatabase() {
         String userId = user.uid;
+        Log.e(TAG, "saveUserToDatabase: " );
         databaseReference.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -42,7 +45,7 @@ public class SaveRemoteUserMiddleware extends LoginMiddleware {
                     if(next != null)
                         next.checkNext(user);
                 }
-                else loginErrorNotificator.handleChainError(String.valueOf(task.getException()));
+                else errorHandler.handleError(String.valueOf(task.getException()));
             }
         });
     }

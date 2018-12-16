@@ -30,10 +30,12 @@
 
     <style name="MyEditText.Title.NotUnderline" parent="MyEditText.Title">
         <item name="android:background">@color/fui_transparent</item>
+        <item name="android:enabled">false</item>
     </style>
 
     <style name="MyEditText.Simple.NotUnderline" parent="MyEditText.Simple">
         <item name="android:background">@color/fui_transparent</item>
+        <item name="android:enabled">false</item>
     </style>
 
 

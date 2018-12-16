@@ -1,9 +1,11 @@
-package com.studing.bd.crashroads.auth.login.ui;
+package com.studing.bd.crashroads.ui.login;
 
 import android.content.Context;
 import android.content.Intent;
 
-public interface ILoginActivity {
+import com.studing.bd.crashroads.ErrorHandler;
+
+public interface ILoginActivity extends ErrorHandler {
 
     String getEmail();
     String getPassword();

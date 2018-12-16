@@ -16,14 +16,14 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="John Harris,"
+            android:text="John Harris,"
             android:inputType="text"
             />
 
         <EditText
             android:id="@+id/profile_age"
             style="@style/MyEditText.Title.NotUnderline"
-            tools:text="23"
+            android:text="23"
             app:layout_constraintStart_toEndOf="@id/profile_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/profile_name"
@@ -55,7 +55,7 @@
         <EditText
             android:id="@+id/profile_email"
             style="@style/MyEditText.Simple.NotUnderline"
-            tools:text="radikushch@gmail.com"
+            android:text="radikushch@gmail.com"
             app:layout_constraintStart_toEndOf="@id/email_const"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/email_const"
@@ -77,7 +77,7 @@
         <EditText
             android:id="@+id/profile_location"
             style="@style/MyEditText.Simple.NotUnderline"
-            tools:text="Ukraine"
+            android:text="Ukraine"
             app:layout_constraintStart_toEndOf="@id/location_const"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/location_const"
@@ -97,7 +97,7 @@
         <EditText
             android:id="@+id/profile_exp"
             style="@style/MyEditText.Simple.NotUnderline"
-            tools:text="5"
+            android:text="5"
             app:layout_constraintStart_toEndOf="@id/exp_const"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/exp_const"

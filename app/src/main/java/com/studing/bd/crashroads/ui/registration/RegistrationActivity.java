@@ -1,4 +1,4 @@
-package com.studing.bd.crashroads.auth.registration.ui;
+package com.studing.bd.crashroads.ui.registration;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -13,14 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.studing.bd.crashroads.auth.registration.IRegistrationManager;
 import com.studing.bd.crashroads.auth.registration.RegistrationManager;
-import com.studing.bd.crashroads.model.Gender;
 import com.studing.bd.crashroads.R;
-import com.studing.bd.crashroads.auth.login.ui.LoginActivity;
+import com.studing.bd.crashroads.ui.login.LoginActivity;
 
 import java.util.Calendar;
 
@@ -141,7 +139,7 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     }
 
     @Override
-    public void showError(String message) {
+    public void handleError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
@@ -188,5 +186,6 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
         String cheapDate = (month + 1) + "/" + dayOfMonth + "/" + year;
         dateEditText.setText(cheapDate);
     }
+
 
 }

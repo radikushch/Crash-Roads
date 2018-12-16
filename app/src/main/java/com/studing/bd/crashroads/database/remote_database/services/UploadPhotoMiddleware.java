@@ -1,28 +1,29 @@
-package com.studing.bd.crashroads.auth.login.authChain.image;
+package com.studing.bd.crashroads.database.remote_database.services;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.auth.login.authChain.LoginMiddleware;
+import com.studing.bd.crashroads.database.DatabaseMiddleware;
+import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
 import com.studing.bd.crashroads.model.User;
 
-public class UploadPhotoMiddleware extends LoginMiddleware {
+public class UploadPhotoMiddleware extends DatabaseMiddleware {
 
     private StorageReference storageReference;
     private User user;
 
-    public UploadPhotoMiddleware(LoginErrorNotificator loginErrorNotificator){
-        super(loginErrorNotificator);
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference("users_photos");
+    private final static String TAG = "login Error";
+
+    public UploadPhotoMiddleware(ErrorHandler errorHandler){
+        super(errorHandler);
+        storageReference = FirebaseInstant.photoReference();
     }
 
     @Override
@@ -43,6 +44,7 @@ public class UploadPhotoMiddleware extends LoginMiddleware {
     }
 
     private void uploadPhotoToFireBaseStorage(byte[] data, final String caption) {
+        Log.e(TAG, "uploadPhotoToFireBaseStorage: " );
         final StorageReference imageRef = storageReference.child(caption + ".jpg");
         final UploadTask uploadTask = imageRef.putBytes(data);
         uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -54,7 +56,7 @@ public class UploadPhotoMiddleware extends LoginMiddleware {
                     if(next != null)
                         next.checkNext(user);
                 }else {
-                    loginErrorNotificator.handleChainError(String.valueOf(task.getException()));
+                    errorHandler.handleError(String.valueOf(task.getException()));
                 }
 
             }

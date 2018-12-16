@@ -21,9 +21,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.studing.bd.crashroads.MainActivity;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.auth.login.ui.ILoginActivity;
-import com.studing.bd.crashroads.auth.login.ui.LoginActivity;
-import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
+import com.studing.bd.crashroads.database.local_database.services.DeleteLocalUserService;
+import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.ui.login.ILoginActivity;
+import com.studing.bd.crashroads.ui.login.LoginActivity;
+import com.studing.bd.crashroads.ui.registration.RegistrationActivity;
 import com.studing.bd.crashroads.model.User;
 
 
@@ -33,6 +35,8 @@ public class LoginManager implements ILoginManager {
     private FirebaseAuth mFireBaseAuth;
     private LoginModel loginModel;
     private static final String EMAIL_VALIDATION_ERROR = "Invalid email format";
+    private final static String TAG = "login Error";
+
 
     public LoginManager(ILoginActivity loginActivity){
         this.loginActivity = loginActivity;
@@ -67,6 +71,7 @@ public class LoginManager implements ILoginManager {
                                 mFireBaseAuth.signOut();
                             }
                             else {
+                                Log.e(TAG, "onComplete: " );
                                 loginModel.createUserWithEmail(new LoginActivity());
                                 updateUI(currentUser);
                             }
@@ -128,7 +133,7 @@ public class LoginManager implements ILoginManager {
                             if(firebaseUser != null) {
                                 User user = createUser(mFireBaseAuth.getCurrentUser());
                                 loginModel.createUserWithGoogle(user, new LoginActivity());
-                                updateUI(firebaseUser);
+                                //updateUI(firebaseUser);
                             }
 
                         }
@@ -188,6 +193,13 @@ public class LoginManager implements ILoginManager {
         @param currentUser signed in user
      */
     private void updateUI(FirebaseUser currentUser) {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         if(currentUser != null) {
             if(currentUser.isAnonymous()) {
 
@@ -204,4 +216,5 @@ public class LoginManager implements ILoginManager {
         if(!Utils.isEmailCorrect(email))
             loginActivity.showError(EMAIL_VALIDATION_ERROR);
     }
+
 }
