@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -20,6 +18,10 @@ import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.auth.login.ILoginManager;
 import com.studing.bd.crashroads.auth.login.LoginManager;
+import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
+
+import io.reactivex.Completable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivity,
@@ -48,6 +50,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
         loginManager = new LoginManager(this);
         initViews();
         listenersSettings();
+//        Completable.fromAction(LocalDatabaseAPI::deleteAll)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe();
     }
 
     private void initViews() {
@@ -61,43 +66,17 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
     }
 
     private void listenersSettings() {
-        emailTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
-                    loginManager.validateEmail();
-                }
-                return true;
+        emailTextView.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
+                loginManager.validateEmail();
             }
+            return true;
         });
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginManager.login();
-            }
-        });
-
-        emailSignUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginManager.signUp();
-            }
-        });
-
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginManager.chooseGoogleUser();
-            }
-        });
-
-        guestSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginManager.anonymousLogin();
-            }
-        });
+        signInButton.setOnClickListener(v -> loginManager.login());
+        emailSignUpButton.setOnClickListener(v -> loginManager.signUp());
+        googleSignInButton.setOnClickListener(v -> loginManager.chooseGoogleUser());
+        guestSignInButton.setOnClickListener(v -> loginManager.anonymousLogin());
     }
 
     @Override

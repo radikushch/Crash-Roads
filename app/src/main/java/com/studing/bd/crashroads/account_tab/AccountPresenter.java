@@ -9,7 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.ui.account_tab.IAccountFragment;
-import com.studing.bd.crashroads.database.remote_database.services.SaveRemoteUserMiddleware;
 import com.studing.bd.crashroads.model.User;
 
 public class AccountPresenter implements IAccountPresenter{
@@ -50,10 +49,9 @@ public class AccountPresenter implements IAccountPresenter{
 
     @Override
     public void updateUserData() {
-        currentUser.name = accountFragment.getName();
-        currentUser.imageByte = Utils.bitmapToArray(accountFragment.getUserPhotoBitmap());
-        currentUser.country = accountFragment.getLocation();
-        currentUser.drivingExperience = accountFragment.getExp();
-        (new SaveRemoteUserMiddleware(accountFragment)).checkNext(currentUser);
+//        currentUser.name = accountFragment.getName();
+//        currentUser.imageByte = Utils.bitmapToArray(accountFragment.getUserPhotoBitmap());
+//        currentUser.country = accountFragment.getLocation();
+//        currentUser.drivingExperience = accountFragment.getExp();
     }
 }

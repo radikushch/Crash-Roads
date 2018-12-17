@@ -10,7 +10,7 @@ import com.google.firebase.storage.StorageReference;
 public class FirebaseInstant {
 
     private final static String REMOTE_USER_TABLE_NAME = "users";
-    private final static String REMOTE_USER_PHOTO_TABLE_NAME = "users_photo";
+    private final static String REMOTE_USER_PHOTO_TABLE_NAME = "users_photos";
 
     public static FirebaseAuth auth() {
         return FirebaseAuth.getInstance();

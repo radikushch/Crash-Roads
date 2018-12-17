@@ -73,18 +73,15 @@ public class AccountFragment extends Fragment implements IAccountFragment,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
-        ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    EditText edit = (EditText) v;
-                    int len = edit.getText().toString().length();
-                    if (len == 0) {
-                        datePicker.show();
-                    }
-                    else {
-                        edit.setSelection(0, len);
-                    }
+        ageEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                EditText edit = (EditText) v;
+                int len = edit.getText().toString().length();
+                if (len == 0) {
+                    datePicker.show();
+                }
+                else {
+                    edit.setSelection(0, len);
                 }
             }
         });
@@ -158,7 +155,7 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     public void setUserInfo(User user) {
         String name = user.name + " " + user.surname + ",";
         nameEditText.setText(name);
-        ageEditText.setText(Utils.getAge(user.birthdayDate));
+        //ageEditText.setText(Utils.getAge(user.birthdayDate));
         emailEditText.setText(user.email);
         locationEditText.setText(user.country);
         expEditText.setText(user.drivingExperience);
