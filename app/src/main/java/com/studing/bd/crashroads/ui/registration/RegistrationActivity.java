@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.studing.bd.crashroads.auth.registration.IRegistrationManager;
@@ -38,6 +40,8 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @BindView(R.id.registration_driving_exp_input) EditText drivingExpEditText;
     @BindView(R.id.registration_date_input) EditText dateEditText;
     @BindView(R.id.registration_profile_photo) CircleImageView profilePhotoImageView;
+    @BindView(R.id.registration_loading) ProgressBar loadProgressBar;
+    @BindView(R.id.registration_container) ScrollView layoutContainer;
     private DatePickerDialog datePicker;
     private static final int RC_SELECT_PICTURE = 0;
 
@@ -56,25 +60,13 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
 
     }
 
-
-
     private void initViews() {
         Button signUpButton = findViewById(R.id.registration_sign_up);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registrationManager.emailSignUp();
-            }
-        });
+        signUpButton.setOnClickListener(v -> registrationManager.emailSignUp());
         profilePhotoImageView.setDrawingCacheEnabled(true);
         profilePhotoImageView.buildDrawingCache();
         FloatingActionButton addProfilePictureButton = findViewById(R.id.registration_add_picture);
-        addProfilePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registrationManager.loadProfilePicture();
-            }
-        });
+        addProfilePictureButton.setOnClickListener(v -> registrationManager.loadProfilePicture());
         initDatePicker();
     }
 
@@ -85,23 +77,19 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
-        dateEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    EditText edit = (EditText) v;
-                    int len = edit.getText().toString().length();
-                    if (len == 0) {
-                        datePicker.show();
-                    }
-                    else {
-                        edit.setSelection(0, len);
-                    }
+        dateEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                EditText edit = (EditText) v;
+                int len = edit.getText().toString().length();
+                if (len == 0) {
+                    datePicker.show();
+                }
+                else {
+                    edit.setSelection(0, len);
                 }
             }
         });
     }
-
 
     @Override
     public String getEmail() {
@@ -136,6 +124,18 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
     @Override
     public String getBirthDayDate() {
         return String.valueOf(dateEditText.getText());
+    }
+
+    @Override
+    public void showProgressBar() {
+        layoutContainer.setVisibility(View.GONE);
+        loadProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        layoutContainer.setVisibility(View.VISIBLE);
+        loadProgressBar.setVisibility(View.GONE);
     }
 
     @Override

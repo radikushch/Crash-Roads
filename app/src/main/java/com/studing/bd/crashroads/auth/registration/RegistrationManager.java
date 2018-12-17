@@ -39,6 +39,7 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
         String password1 = registrationActivity.getPassword1();
         String password2 = registrationActivity.getPassword2();
         if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
+            registrationActivity.showProgressBar();
             fireBaseSignUp(email, password1);
         }else{
             registrationActivity.handleError("Input correct data");
@@ -93,11 +94,13 @@ public class RegistrationManager implements IRegistrationManager, RegistrationMo
 
     @Override
     public void onSave() {
+        registrationActivity.hideProgressBar();
         updateUi();
     }
 
     @Override
     public void onFail(String message) {
+        registrationActivity.hideProgressBar();
         registrationActivity.handleError(message);
     }
 

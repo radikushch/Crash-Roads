@@ -14,4 +14,6 @@ public interface ILoginActivity extends ErrorHandler {
     void startNewActivityForResult(Intent intent);
     Context getContext();
     String getStringResource(int resources);
+    void showProgressBar();
+    void hideProgressBar();
 }

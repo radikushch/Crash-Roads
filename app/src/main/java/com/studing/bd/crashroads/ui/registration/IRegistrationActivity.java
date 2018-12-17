@@ -15,6 +15,8 @@ public interface IRegistrationActivity extends ErrorHandler {
     String getSurname();
     String getDrivingExperience();
     String getBirthDayDate();
+    void showProgressBar();
+    void hideProgressBar();
 
     void startNewActivity(Intent intent);
     void startNewActivityForResult(Intent intent, String action);

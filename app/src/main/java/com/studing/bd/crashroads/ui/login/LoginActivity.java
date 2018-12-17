@@ -3,13 +3,16 @@ package com.studing.bd.crashroads.ui.login;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import com.studing.bd.crashroads.auth.login.ILoginManager;
 import com.studing.bd.crashroads.auth.login.LoginManager;
 import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
 
+import butterknife.BindView;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -27,11 +31,14 @@ import io.reactivex.schedulers.Schedulers;
 public class LoginActivity extends AppCompatActivity implements ILoginActivity,
         ErrorHandler {
 
-    private AutoCompleteTextView emailTextView;
-    private EditText passwordEditText;
-    private Button signInButton;
-    private SignInButton googleSignInButton;
-    private TextView emailSignUpButton, guestSignInButton;
+    @BindView(R.id.email) AutoCompleteTextView emailTextView;
+    @BindView(R.id.password) EditText passwordEditText;
+    @BindView(R.id.email_sign_in_button) Button signInButton;
+    @BindView(R.id.google_sign_in_button) SignInButton googleSignInButton;
+    @BindView(R.id.sign_up_button) TextView emailSignUpButton;
+    @BindView(R.id.guest_button) TextView guestSignInButton;
+    @BindView(R.id.login_container) ConstraintLayout layoutContainer;
+    @BindView(R.id.login_loading) ProgressBar loadProgressBar;
 
     private ILoginManager loginManager;
 
@@ -48,21 +55,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         loginManager = new LoginManager(this);
-        initViews();
-        listenersSettings();
-//        Completable.fromAction(LocalDatabaseAPI::deleteAll)
-//                .subscribeOn(Schedulers.io())
-//                .subscribe();
-    }
-
-    private void initViews() {
-        emailTextView = findViewById(R.id.email);
-        passwordEditText = findViewById(R.id.password);
-        signInButton = findViewById(R.id.email_sign_in_button);
-        googleSignInButton = findViewById(R.id.google_sign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
-        emailSignUpButton = findViewById(R.id.sign_up_button);
-        guestSignInButton = findViewById(R.id.guest_button);
+        listenersSettings();
     }
 
     private void listenersSettings() {
@@ -121,6 +115,18 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
     @Override
     public String getStringResource(int resources) {
         return getString(resources);
+    }
+
+    @Override
+    public void showProgressBar() {
+        layoutContainer.setVisibility(View.GONE);
+        loadProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        layoutContainer.setVisibility(View.VISIBLE);
+        loadProgressBar.setVisibility(View.GONE);
     }
 
     @Override

@@ -50,6 +50,7 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
     public void login() {
         String email = loginActivity.getEmail();
         String password = loginActivity.getPassword();
+        loginActivity.showProgressBar();
         fireBaseLogin(email, password);
     }
 
@@ -165,11 +166,13 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
 
     @Override
     public void onSave() {
+        loginActivity.hideProgressBar();
         updateUI(FirebaseInstant.user());
     }
 
     @Override
     public void onFail(String message) {
+        loginActivity.hideProgressBar();
         loginActivity.handleError(message);
     }
 
@@ -187,6 +190,4 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
             }
         }
     }
-
-
 }
