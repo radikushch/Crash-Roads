@@ -140,6 +140,8 @@ public class RegistrationActivity extends AppCompatActivity implements IRegistra
 
     @Override
     public void handleError(String message) {
+        layoutContainer.setVisibility(View.VISIBLE);
+        loadProgressBar.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 

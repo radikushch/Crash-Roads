@@ -24,6 +24,7 @@ import com.studing.bd.crashroads.auth.login.LoginManager;
 import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         loginManager = new LoginManager(this);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         listenersSettings();
@@ -85,6 +87,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
 
     @Override
     public void showError(String errorMessage) {
+        layoutContainer.setVisibility(View.VISIBLE);
+        loadProgressBar.setVisibility(View.GONE);
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 
@@ -131,6 +135,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
 
     @Override
     public void handleError(String message) {
+        layoutContainer.setVisibility(View.VISIBLE);
+        loadProgressBar.setVisibility(View.GONE);
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

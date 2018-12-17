@@ -1,6 +1,5 @@
 package com.studing.bd.crashroads.auth.login;
 
-import android.media.browse.MediaBrowser;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -13,24 +12,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.database.DatabaseMiddleware;
-import com.studing.bd.crashroads.database.local_database.LocalDatabase;
 import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
 import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
 import com.studing.bd.crashroads.database.remote_database.RemoteDatabaseAPI;
 import com.studing.bd.crashroads.database.remote_database.RemoteStorageAPI;
 import com.studing.bd.crashroads.model.User;
 
-import org.reactivestreams.Subscription;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -41,6 +34,7 @@ public class LoginModel {
     interface OnResponseCallback {
         void onSave();
         void onFail(String message);
+        void onResume();
     }
 
     private OnResponseCallback callback;
@@ -74,6 +68,8 @@ public class LoginModel {
                                     callback.onFail(e.getMessage());
                                 }
                             });
+                }else {
+                    callback.onResume();
                 }
             }
 
@@ -182,6 +178,8 @@ public class LoginModel {
                                 }
                             });
 
+                }else {
+                    callback.onResume();
                 }
             }
 

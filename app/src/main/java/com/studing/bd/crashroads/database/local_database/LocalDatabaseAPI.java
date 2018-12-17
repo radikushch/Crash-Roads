@@ -19,7 +19,4 @@ public class LocalDatabaseAPI {
         return CrashRoadsApp.getInstance().getDatabase().userDao().query(id);
     }
 
-    public static void deleteAll() {
-        CrashRoadsApp.getInstance().getDatabase().userDao().deleteAll();
-    }
 }

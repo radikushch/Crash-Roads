@@ -176,6 +176,12 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
         loginActivity.handleError(message);
     }
 
+    @Override
+    public void onResume() {
+        loginActivity.hideProgressBar();
+        updateUI(FirebaseInstant.user());
+    }
+
     /**
      Update Ui or change activity after authentication
      @param currentUser signed in user
