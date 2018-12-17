@@ -2,35 +2,35 @@ package com.studing.bd.crashroads.auth.registration;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.studing.bd.crashroads.auth.registration.ui.IRegistrationActivity;
-import com.studing.bd.crashroads.auth.registration.ui.RegistrationActivity;
+import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
+import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.ui.registration.IRegistrationActivity;
+import com.studing.bd.crashroads.ui.registration.RegistrationActivity;
 import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.Utils;
 
 import java.util.Objects;
 
-public class RegistrationManager implements IRegistrationManager {
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+public class RegistrationManager implements IRegistrationManager, RegistrationModel.OnResponseCallback {
 
     private IRegistrationActivity registrationActivity;
     private RegistrationModel registrationModel;
     private FirebaseAuth mFireBaseAuth;
 
-
     private static final String SELECT_PICTURE_ACTION = "Select Picture";
-
 
     public RegistrationManager(RegistrationActivity registrationActivity){
         mFireBaseAuth = FirebaseAuth.getInstance();
-        registrationModel = new RegistrationModel();
         this.registrationActivity = registrationActivity;
+        registrationModel = new RegistrationModel(this);
     }
 
     @Override
@@ -41,46 +41,28 @@ public class RegistrationManager implements IRegistrationManager {
         if(Utils.isEmailCorrect(email) && Utils.isPasswordCorrect(password1, password2)) {
             fireBaseSignUp(email, password1);
         }else{
-            registrationActivity.showError("Input correct data");
+            registrationActivity.handleError("Input correct data");
         }
     }
 
-
-    private void fireBaseSignUp(String email, String password) {
+    private void fireBaseSignUp(final String email, final String password) {
         mFireBaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            sendEmailVerification();
-                            User user = createUser(mFireBaseAuth.getCurrentUser());
-                            registrationModel.saveUserToLocalDatabase(user);
-                            updateUI();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        sendEmailVerification();
+                        User user = createUser(mFireBaseAuth.getCurrentUser());
+                        registrationModel.saveUser(user);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        registrationActivity.showError(e.getMessage());
-                    }
-                });
+                }).addOnFailureListener(e -> registrationActivity.handleError(e.getMessage()));
     }
 
     private void sendEmailVerification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Objects.requireNonNull(mFireBaseAuth.getCurrentUser()).sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()) {
-                        registrationActivity.showError("Verify your email address");
-                    }
+            Objects.requireNonNull(mFireBaseAuth.getCurrentUser()).sendEmailVerification().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    registrationActivity.handleError("Verify your email address");
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    registrationActivity.showError(e.getMessage());
-                }
-            });
+            }).addOnFailureListener(e -> registrationActivity.handleError(e.getMessage()));
         }
     }
 
@@ -109,8 +91,18 @@ public class RegistrationManager implements IRegistrationManager {
         registrationActivity.startNewActivityForResult(intent, SELECT_PICTURE_ACTION);
     }
 
-    private void updateUI() {
-        registrationActivity.stop();
+    @Override
+    public void onSave() {
+        updateUi();
     }
 
+    @Override
+    public void onFail(String message) {
+        registrationActivity.handleError(message);
+    }
+
+    private void updateUi() {
+        FirebaseInstant.auth().signOut();
+        registrationActivity.stop();
+    }
 }

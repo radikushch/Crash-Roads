@@ -4,7 +4,7 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 
 import com.facebook.stetho.Stetho;
-import com.studing.bd.crashroads.auth.database.LocalDatabase;
+import com.studing.bd.crashroads.database.local_database.LocalDatabase;
 
 public class CrashRoadsApp extends Application {
 

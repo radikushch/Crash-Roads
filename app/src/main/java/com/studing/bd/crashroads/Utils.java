@@ -6,6 +6,8 @@ import android.telephony.TelephonyManager;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -52,5 +54,11 @@ public class Utils {
         }
         catch (Exception ignored) { }
         return null;
+    }
+
+    public static int getAge(String birthDate) {
+        int birthYear = Integer.parseInt(birthDate.split("/")[2]);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        return year - birthYear;
     }
 }

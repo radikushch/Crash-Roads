@@ -1,28 +1,40 @@
 package com.studing.bd.crashroads.auth.registration;
 
-import android.os.AsyncTask;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.studing.bd.crashroads.CrashRoadsApp;
-import com.studing.bd.crashroads.auth.database.UserDao;
+import com.google.firebase.auth.FirebaseUser;
+import com.studing.bd.crashroads.database.local_database.LocalDatabaseAPI;
 import com.studing.bd.crashroads.model.User;
-import com.studing.bd.crashroads.auth.database.LocalDatabase;
+
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class RegistrationModel {
+    interface OnResponseCallback {
+        void onSave();
+        void onFail(String message);
+    }
 
-    public void saveUserToLocalDatabase(final User user) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                LocalDatabase db = CrashRoadsApp.getInstance().getDatabase();
-                UserDao userDao = db.userDao();
-                userDao.insert(user);
-                FirebaseAuth.getInstance().signOut();
-            }
-        });
+    private OnResponseCallback callback;
+
+    public RegistrationModel(OnResponseCallback callback) {
+        this.callback = callback;
+    }
+
+    public void saveUser(User user) {
+        Completable.fromAction(() -> LocalDatabaseAPI.insert(user))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        callback.onSave();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onFail(e.getMessage());
+                    }
+                });
     }
 }
