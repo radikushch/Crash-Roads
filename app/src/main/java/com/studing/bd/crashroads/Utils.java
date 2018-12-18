@@ -2,6 +2,7 @@ package com.studing.bd.crashroads;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.telephony.TelephonyManager;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +38,10 @@ public class Utils {
         return baos.toByteArray();
     }
 
+    public static Bitmap arrayToBitmap(byte[] array) {
+        return BitmapFactory.decodeByteArray(array, 0, array.length);
+    }
+
     public static String getUserCountry(Context context) {
         try {
             final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -53,12 +58,15 @@ public class Utils {
             }
         }
         catch (Exception ignored) { }
-        return null;
+        return " ";
     }
 
-    public static int getAge(String birthDate) {
+    public static String getAge(String birthDate) {
+        if(birthDate == null || birthDate.length() == 0){
+            return " ";
+        }
         int birthYear = Integer.parseInt(birthDate.split("/")[2]);
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        return year - birthYear;
+        return String.valueOf(year - birthYear);
     }
 }

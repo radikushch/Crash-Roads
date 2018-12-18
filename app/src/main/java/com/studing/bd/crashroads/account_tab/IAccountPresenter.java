@@ -1,8 +1,14 @@
 package com.studing.bd.crashroads.account_tab;
 
+import android.os.Bundle;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public interface IAccountPresenter {
 
+    void saveViewState();
+    Bundle getViewState();
+    void setUserBirthDate(String date);
     void loadUserData();
-    void setBirthDate(String date);
-    void updateUserData();
+    void updateUserInfo();
 }

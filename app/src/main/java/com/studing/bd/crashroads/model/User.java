@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @Entity
 @IgnoreExtraProperties
-public class User {
+public class User implements Serializable {
 
     @NonNull
     @PrimaryKey
@@ -61,6 +63,22 @@ public class User {
 
     public static UserBuilder builder() {
         return new UserBuilder();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        return String.valueOf(str.append(name + " " + surname + "\n")
+                .append(email)
+                .append("\n")
+                .append(country)
+                .append("\n")
+                .append(imageUrl)
+                .append("\n")
+                .append(birthdayDate)
+                .append("\n")
+                .append(drivingExperience));
+
     }
 
     public static class UserBuilder {

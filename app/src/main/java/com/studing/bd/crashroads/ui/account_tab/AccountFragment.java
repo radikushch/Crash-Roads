@@ -2,13 +2,16 @@ package com.studing.bd.crashroads.ui.account_tab;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +23,15 @@ import android.widget.Toast;
 import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.Utils;
+import com.studing.bd.crashroads.account_tab.AccountModel;
 import com.studing.bd.crashroads.account_tab.AccountPresenter;
 import com.studing.bd.crashroads.account_tab.IAccountPresenter;
+import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
 import com.studing.bd.crashroads.model.User;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +40,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountFragment extends Fragment implements IAccountFragment,
         DatePickerDialog.OnDateSetListener, ErrorHandler {
+
+    private static final String TAG = "MyFragment";
+
+    public interface PassUserObject {
+        User getCurrentUSer();
+    }
 
     @BindView(R.id.profile_photo) CircleImageView photoImageView;
     @BindView(R.id.profile_photo_edit) FloatingActionButton photoEditImageView;
@@ -44,11 +57,21 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     @BindView(R.id.profile_edit) Button editButton;
     @BindView(R.id.profile_edit_save) Button saveButton;
     @BindView(R.id.profile_edit_cancel) Button cancelButton;
+
     private Drawable originalBackground;
     private Drawable underlineTitleBackground;
     private Drawable underlineTextBackground;
     private IAccountPresenter accountPresenter;
     private DatePickerDialog datePicker;
+    private PassUserObject activityBridge;
+    private AccountModel accountModel;
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activityBridge = (PassUserObject) getActivity();
+    }
 
     @Nullable
     @Override
@@ -60,36 +83,27 @@ public class AccountFragment extends Fragment implements IAccountFragment,
         originalBackground = (new EditText(getActivity())).getBackground();
         underlineTextBackground = emailEditText.getBackground();
         underlineTitleBackground = nameEditText.getBackground();
-        accountPresenter = new AccountPresenter(this);
-        accountPresenter.loadUserData();
+        User user = activityBridge.getCurrentUSer();
+
+        accountPresenter = new AccountPresenter(this, user);
         initDatePicker();
+        accountPresenter.loadUserData();
         return v;
     }
 
-    private void initDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        datePicker = new DatePickerDialog(getActivity(),
-                this,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-        ageEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                EditText edit = (EditText) v;
-                int len = edit.getText().toString().length();
-                if (len == 0) {
-                    datePicker.show();
-                }
-                else {
-                    edit.setSelection(0, len);
-                }
-            }
-        });
+    @Override
+    public void setUserInfo(User user) {
+        String name = user.name + " " + user.surname + ",";
+        nameEditText.setText(name);
+        ageEditText.setText(Utils.getAge(user.birthdayDate));
+        emailEditText.setText(user.email);
+        locationEditText.setText(user.country);
+        expEditText.setText(user.drivingExperience);
     }
-
 
     @OnClick(R.id.profile_edit)
     public void edit() {
+        accountPresenter.saveViewState();
         setViewVisible();
         setViewEnabled();
         setOriginalDrawable();
@@ -97,13 +111,24 @@ public class AccountFragment extends Fragment implements IAccountFragment,
 
     @OnClick(R.id.profile_edit_cancel)
     public void cancel() {
+        retainViewState();
         setViewInvisible();
         setEditDrawable();
         setViewUnenabled();
     }
 
+    private void retainViewState() {
+        Bundle viewState = accountPresenter.getViewState();
+        nameEditText.setText(viewState.getCharSequence("name").toString());
+        ageEditText.setText(viewState.getCharSequence("age").toString());
+        locationEditText.setText(viewState.getCharSequence("location").toString());
+        expEditText.setText(viewState.getCharSequence("exp").toString());
+        photoImageView.setImageBitmap(Utils.arrayToBitmap(viewState.getByteArray("photo")));
+    }
+
     @OnClick(R.id.profile_edit_save)
     public void save() {
+        accountPresenter.updateUserInfo();
         setViewInvisible();
         setEditDrawable();
         setViewUnenabled();
@@ -152,16 +177,6 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     }
 
     @Override
-    public void setUserInfo(User user) {
-        String name = user.name + " " + user.surname + ",";
-        nameEditText.setText(name);
-        //ageEditText.setText(Utils.getAge(user.birthdayDate));
-        emailEditText.setText(user.email);
-        locationEditText.setText(user.country);
-        expEditText.setText(user.drivingExperience);
-    }
-
-    @Override
     public String getName() {
         return String.valueOf(nameEditText.getText());
     }
@@ -191,15 +206,36 @@ public class AccountFragment extends Fragment implements IAccountFragment,
         return ((BitmapDrawable) photoImageView.getDrawable()).getBitmap();
     }
 
+    private void initDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        datePicker = new DatePickerDialog(getActivity(),
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        ageEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                EditText edit = (EditText) v;
+                edit.setText("");
+                datePicker.show();
+            }
+        });
+    }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String cheapDate = (month + 1) + "/" + dayOfMonth + "/" + year;
-        accountPresenter.setBirthDate(cheapDate);
+        accountPresenter.setUserBirthDate(cheapDate);
         ageEditText.setText(Utils.getAge(cheapDate));
     }
 
     @Override
     public void handleError(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public CircleImageView getImageContainer() {
+        return photoImageView;
     }
 }

@@ -1,21 +1,21 @@
 package com.studing.bd.crashroads;
 
+import android.accounts.AccountManager;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.studing.bd.crashroads.auth.login.LoginManager;
 import com.studing.bd.crashroads.ui.account_tab.AccountFragment;
 import com.studing.bd.crashroads.model.User;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AccountFragment.PassUserObject {
 
-    private TextView mTextMessage;
-    private FirebaseAuth mFireBaseAuth;
-    private User currentUser;
-
+    private static final String TAG = "MainActivity_debug";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().add(R.id.fragmentCont, fragment).commit();
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    @Override
+    public User getCurrentUSer() {
+        return (User) getIntent().getSerializableExtra("current_user");
     }
 }

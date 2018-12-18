@@ -32,15 +32,34 @@ public class LoginModel {
     private static String TAG = "debugDb";
 
     interface OnResponseCallback {
-        void onSave();
+        void onSave(User user);
         void onFail(String message);
-        void onResume();
+        void onResume(User user);
     }
 
     private OnResponseCallback callback;
 
     public LoginModel(OnResponseCallback callback) {
         this.callback = callback;
+    }
+
+    public void loadUser() {
+        DatabaseReference ref = FirebaseInstant.userReference()
+                .child(FirebaseInstant.user().getUid());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null) {
+                    User user =  dataSnapshot.getValue(User.class);
+                    callback.onResume(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onFail(databaseError.getMessage());
+            }
+        });
     }
 
     public void createUserWithEmail() {
@@ -69,7 +88,8 @@ public class LoginModel {
                                 }
                             });
                 }else {
-                    callback.onResume();
+                    User user =  dataSnapshot.getValue(User.class);
+                    callback.onResume(user);
                 }
             }
 
@@ -144,7 +164,7 @@ public class LoginModel {
                 .subscribe(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
-                        callback.onSave();
+                        callback.onSave(user);
                     }
 
                     @Override
@@ -163,13 +183,13 @@ public class LoginModel {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue() == null) {
-                    Completable.fromAction(() -> RemoteDatabaseAPI.insert(user))
+                    RemoteDatabaseAPI.insert(user)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new DisposableCompletableObserver() {
                                 @Override
                                 public void onComplete() {
-                                    callback.onSave();
+                                    callback.onSave(user);
                                 }
 
                                 @Override
@@ -179,7 +199,8 @@ public class LoginModel {
                             });
 
                 }else {
-                    callback.onResume();
+                    User user = dataSnapshot.getValue(User.class);
+                    callback.onResume(user);
                 }
             }
 

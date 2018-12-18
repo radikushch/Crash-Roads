@@ -29,6 +29,7 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
     private FirebaseAuth mFireBaseAuth;
     private LoginModel loginModel;
     private static final String EMAIL_VALIDATION_ERROR = "Invalid email format";
+    private static final String CURRENT_USER_EXTRA_NAME = "current_user";
     private final static String TAG = "login Error";
 
 
@@ -42,7 +43,7 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
     public void checkUserSignedIn() {
         FirebaseUser currentUser = mFireBaseAuth.getCurrentUser();
         if(currentUser != null) {
-            updateUI(currentUser);
+            updateUI(null);
         }
     }
 
@@ -149,8 +150,7 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
         mFireBaseAuth.signInAnonymously()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-                        FirebaseUser user = mFireBaseAuth.getCurrentUser();
-                        updateUI(user);
+                        updateUI(null);
                     }
                 }).addOnFailureListener(e -> loginActivity.showError(e.getMessage()));
     }
@@ -165,9 +165,9 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
     }
 
     @Override
-    public void onSave() {
+    public void onSave(User user) {
+        updateUI(user);
         loginActivity.hideProgressBar();
-        updateUI(FirebaseInstant.user());
     }
 
     @Override
@@ -177,22 +177,28 @@ public class LoginManager implements ILoginManager, LoginModel.OnResponseCallbac
     }
 
     @Override
-    public void onResume() {
+    public void onResume(User user) {
+        updateUI(user);
         loginActivity.hideProgressBar();
-        updateUI(FirebaseInstant.user());
     }
 
     /**
      Update Ui or change activity after authentication
-     @param currentUser signed in user
+     @param user signed in user
      */
-    private void updateUI(FirebaseUser currentUser) {
-        if(currentUser != null) {
-            if(currentUser.isAnonymous()) {
+    private void updateUI(User user) {
+        if(user != null) {
+            Intent intent = new Intent(loginActivity.getContext(), MainActivity.class);
+            intent.putExtra(CURRENT_USER_EXTRA_NAME, user);
+            loginActivity.startNewActivity(intent);
+        }else {
+            if(FirebaseInstant.user().isAnonymous()) {
 
             }else {
-                Intent intent = new Intent(loginActivity.getContext(), MainActivity.class);
-                loginActivity.startNewActivity(intent);
+                if(FirebaseInstant.user().isEmailVerified()) {
+                    loginActivity.showProgressBar();
+                    loginModel.loadUser();
+                }
             }
         }
     }
