@@ -1,6 +1,8 @@
 package com.studing.bd.crashroads.database.remote_database;
 
 import android.net.Uri;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.studing.bd.crashroads.model.User;
 
 import io.reactivex.Completable;
@@ -25,6 +27,15 @@ public class RemoteStorageAPI {
                 .child(caption + ".jpg")
                 .getDownloadUrl()
                 .addOnSuccessListener(emitter::onSuccess)
+                .addOnFailureListener(emitter::onError));
+    }
+
+    public static Completable delete() {
+        return Completable.create(emitter -> FirebaseInstant
+                .photoReference()
+                .child(FirebaseInstant.user().getUid() + ".jpg")
+                .delete()
+                .addOnSuccessListener(aVoid -> emitter.onComplete())
                 .addOnFailureListener(emitter::onError));
     }
 }

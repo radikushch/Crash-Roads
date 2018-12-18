@@ -13,7 +13,7 @@ import com.studing.bd.crashroads.ui.account_tab.AccountFragment;
 import com.studing.bd.crashroads.model.User;
 
 
-public class MainActivity extends AppCompatActivity implements AccountFragment.PassUserObject {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity_debug";
 
@@ -25,8 +25,4 @@ public class MainActivity extends AppCompatActivity implements AccountFragment.P
         getFragmentManager().beginTransaction().add(R.id.fragmentCont, fragment).commit();
     }
 
-    @Override
-    public User getCurrentUSer() {
-        return (User) getIntent().getSerializableExtra("current_user");
-    }
 }

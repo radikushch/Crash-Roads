@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
     @Override
     protected void onResume() {
         super.onResume();
-        loginManager.checkUserSignedIn();
     }
 
     @Override
@@ -59,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivity,
         loginManager = new LoginManager(this);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         listenersSettings();
+        loginManager.checkUserSignedIn();
     }
 
     private void listenersSettings() {

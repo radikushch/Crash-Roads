@@ -1,5 +1,6 @@
 package com.studing.bd.crashroads.ui.account_tab;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 
 import com.studing.bd.crashroads.ErrorHandler;
@@ -18,5 +19,6 @@ public interface IAccountFragment extends ErrorHandler {
     Bitmap getUserPhotoBitmap();
     void handleError(String message);
     CircleImageView getImageContainer();
+    void startNewActivityForResult(Intent intent, String action);
 
 }

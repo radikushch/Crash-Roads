@@ -102,8 +102,7 @@ public class LoginModel {
 
 
     private void uploadPhoto(User user) {
-        String caption = user.name + Utils.getDateStamp();
-        Log.e(TAG, "uploadPhoto: " + caption );
+        String caption = FirebaseInstant.user().getUid();
         RemoteStorageAPI.upload(user, caption)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

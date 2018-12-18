@@ -3,6 +3,7 @@ package com.studing.bd.crashroads.ui.account_tab;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,6 +28,7 @@ import com.studing.bd.crashroads.account_tab.AccountModel;
 import com.studing.bd.crashroads.account_tab.AccountPresenter;
 import com.studing.bd.crashroads.account_tab.IAccountPresenter;
 import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.model.CurrentUser;
 import com.studing.bd.crashroads.model.User;
 
 import java.util.ArrayList;
@@ -38,14 +40,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_OK;
+
 public class AccountFragment extends Fragment implements IAccountFragment,
         DatePickerDialog.OnDateSetListener, ErrorHandler {
 
     private static final String TAG = "MyFragment";
-
-    public interface PassUserObject {
-        User getCurrentUSer();
-    }
 
     @BindView(R.id.profile_photo) CircleImageView photoImageView;
     @BindView(R.id.profile_photo_edit) FloatingActionButton photoEditImageView;
@@ -57,21 +57,14 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     @BindView(R.id.profile_edit) Button editButton;
     @BindView(R.id.profile_edit_save) Button saveButton;
     @BindView(R.id.profile_edit_cancel) Button cancelButton;
+    private static final int RC_SELECT_PHOTO = 1;
 
     private Drawable originalBackground;
     private Drawable underlineTitleBackground;
     private Drawable underlineTextBackground;
     private IAccountPresenter accountPresenter;
     private DatePickerDialog datePicker;
-    private PassUserObject activityBridge;
-    private AccountModel accountModel;
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        activityBridge = (PassUserObject) getActivity();
-    }
 
     @Nullable
     @Override
@@ -83,9 +76,7 @@ public class AccountFragment extends Fragment implements IAccountFragment,
         originalBackground = (new EditText(getActivity())).getBackground();
         underlineTextBackground = emailEditText.getBackground();
         underlineTitleBackground = nameEditText.getBackground();
-        User user = activityBridge.getCurrentUSer();
-
-        accountPresenter = new AccountPresenter(this, user);
+        accountPresenter = new AccountPresenter(this);
         initDatePicker();
         accountPresenter.loadUserData();
         return v;
@@ -93,12 +84,17 @@ public class AccountFragment extends Fragment implements IAccountFragment,
 
     @Override
     public void setUserInfo(User user) {
-        String name = user.name + " " + user.surname + ",";
+        String name = user.name + " " + user.surname;
         nameEditText.setText(name);
         ageEditText.setText(Utils.getAge(user.birthdayDate));
         emailEditText.setText(user.email);
         locationEditText.setText(user.country);
         expEditText.setText(user.drivingExperience);
+    }
+
+    @OnClick(R.id.profile_photo_edit)
+    public void editPhoto() {
+        accountPresenter.loadProfilePhoto();
     }
 
     @OnClick(R.id.profile_edit)
@@ -183,7 +179,7 @@ public class AccountFragment extends Fragment implements IAccountFragment,
 
     @Override
     public String getAge() {
-        return null;
+        return String.valueOf(ageEditText.getText());
     }
 
     @Override
@@ -225,7 +221,7 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String cheapDate = (month + 1) + "/" + dayOfMonth + "/" + year;
-        accountPresenter.setUserBirthDate(cheapDate);
+        CurrentUser.get().birthdayDate = cheapDate;
         ageEditText.setText(Utils.getAge(cheapDate));
     }
 
@@ -237,5 +233,20 @@ public class AccountFragment extends Fragment implements IAccountFragment,
     @Override
     public CircleImageView getImageContainer() {
         return photoImageView;
+    }
+
+    @Override
+    public void startNewActivityForResult(Intent intent, String action) {
+        startActivityForResult(Intent.createChooser(intent, action), RC_SELECT_PHOTO);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == RC_SELECT_PHOTO) {
+                photoImageView.setImageURI(data.getData());
+            }
+        }
     }
 }

@@ -8,7 +8,8 @@ public interface IAccountPresenter {
 
     void saveViewState();
     Bundle getViewState();
-    void setUserBirthDate(String date);
     void loadUserData();
     void updateUserInfo();
+
+    void loadProfilePhoto();
 }

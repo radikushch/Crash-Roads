@@ -1,10 +1,11 @@
 package com.studing.bd.crashroads.account_tab;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.model.CurrentUser;
 import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.ui.account_tab.IAccountFragment;
 
@@ -12,15 +13,13 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
 
     private IAccountFragment accountFragment;
     private Bundle viewState;
-    private User user;
+    private static final String SELECT_PHOTO_ACTION = "Select Picture";
     private AccountModel accountModel;
 
-    public AccountPresenter(IAccountFragment accountFragment, User user) {
+    public AccountPresenter(IAccountFragment accountFragment) {
         this.accountFragment = accountFragment;
         accountModel = new AccountModel(this);
         viewState = new Bundle();
-        this.user = user;
-        this.user.uid = FirebaseInstant.user().getUid();
     }
 
     @Override
@@ -38,18 +37,15 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
     }
 
     @Override
-    public void setUserBirthDate(String date) {
-        user.birthdayDate = date;
-    }
-
-    @Override
     public void loadUserData() {
+        User user = CurrentUser.get();
         accountFragment.setUserInfo(user);
         accountModel.loadPhoto(Uri.parse(user.imageUrl), accountFragment.getImageContainer());
     }
 
     @Override
     public void updateUserInfo() {
+        User user = CurrentUser.get();
         String fullName = accountFragment.getName();
         if(fullName.length() > 0) {
             String[] nameParts = fullName.split(" ");
@@ -62,12 +58,26 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
         }
         user.country = accountFragment.getLocation();
         user.drivingExperience = accountFragment.getExp();
+        accountFragment.setUserInfo(user);
+        user.imageByte = Utils.bitmapToArray(accountFragment.getUserPhotoBitmap());
         accountModel.updateUserData(user);
     }
 
     @Override
+    public void loadProfilePhoto() {
+        openGallery();
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        accountFragment.startNewActivityForResult(intent, SELECT_PHOTO_ACTION);
+    }
+
+    @Override
     public void onUpdate(User newUser) {
-        user = newUser;
+        CurrentUser.set(newUser);
     }
 
     @Override
