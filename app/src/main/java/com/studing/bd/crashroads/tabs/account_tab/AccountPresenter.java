@@ -1,13 +1,20 @@
-package com.studing.bd.crashroads.account_tab;
+package com.studing.bd.crashroads.tabs.account_tab;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.model.CurrentUser;
 import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.ui.account_tab.IAccountFragment;
+
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdateCallback {
 
@@ -40,7 +47,9 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
     public void loadUserData() {
         User user = CurrentUser.get();
         accountFragment.setUserInfo(user);
-        accountModel.loadPhoto(Uri.parse(user.imageUrl), accountFragment.getImageContainer());
+        if(user.imageByte == null)
+            accountModel.loadPhoto(Uri.parse(user.imageUrl), accountFragment.getImageContainer());
+        else accountFragment.getImageContainer().setImageBitmap(Utils.arrayToBitmap(user.imageByte));
     }
 
     @Override

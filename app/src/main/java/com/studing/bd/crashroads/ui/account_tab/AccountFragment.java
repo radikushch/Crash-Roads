@@ -2,17 +2,14 @@ package com.studing.bd.crashroads.ui.account_tab;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,16 +21,12 @@ import android.widget.Toast;
 import com.studing.bd.crashroads.ErrorHandler;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.Utils;
-import com.studing.bd.crashroads.account_tab.AccountModel;
-import com.studing.bd.crashroads.account_tab.AccountPresenter;
-import com.studing.bd.crashroads.account_tab.IAccountPresenter;
-import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
+import com.studing.bd.crashroads.tabs.account_tab.AccountPresenter;
+import com.studing.bd.crashroads.tabs.account_tab.IAccountPresenter;
 import com.studing.bd.crashroads.model.CurrentUser;
 import com.studing.bd.crashroads.model.User;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -13,7 +13,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.studing.bd.crashroads.MainActivity;
+import com.studing.bd.crashroads.ui.MainActivity;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;

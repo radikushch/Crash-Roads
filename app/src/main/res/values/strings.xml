@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">CrashRoads</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Profile</string>
+    <string name="title_dashboard">Map</string>
+    <string name="title_notifications">Settings</string>
     <string name="title_activity_login">Sign in</string>
 
 
