@@ -72,7 +72,7 @@ public class SettingsFragment extends Fragment implements ISettingsFragment{
             if(settingsPresenter.validatePasswords(String.valueOf(passw1.getText()), String.valueOf(passw2.getText()))) {
                 settingsPresenter.updatePassword(String.valueOf(passw1.getText()));
             }else {
-                handleError("Password are different");
+                handleError("Passwords are different");
             }
             dialog.dismiss();
         });
