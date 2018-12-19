@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.telephony.TelephonyManager;
 
+import com.studing.bd.crashroads.model.RouteQuality;
+
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -68,5 +70,9 @@ public class Utils {
         int birthYear = Integer.parseInt(birthDate.split("/")[2]);
         int year = Calendar.getInstance().get(Calendar.YEAR);
         return String.valueOf(year - birthYear);
+    }
+
+    public static int convertRouteQuality(RouteQuality quality) {
+        return 0;
     }
 }

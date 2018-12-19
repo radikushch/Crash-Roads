@@ -42,4 +42,16 @@
     <string name="profile_edit_ave_button_caption">Save</string>
 
 
+    <!--Strings for ratig dialog-->
+    <string name="rating_header">Rate selected road</string>
+    <string name="update_rating">Update</string>
+    <string name="bad_quality">terrible</string>
+    <string name="low_quality">low</string>
+    <string name="middle_quality">midle</string>
+    <string name="high_quality">high</string>
+    <string name="good_quality">perfect</string>
+
+    <!--Strings for map fragment-->
+    <string name="google_maps_web_services_key">AIzaSyCoBhi-d2AInViMMyZXdpJOtkpAbPNyP_4</string>
+
 </resources>

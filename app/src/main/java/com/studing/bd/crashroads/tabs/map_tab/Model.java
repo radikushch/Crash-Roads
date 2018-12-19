@@ -1,7 +1,7 @@
 package com.studing.bd.crashroads.tabs.map_tab;
 
 import com.studing.bd.crashroads.database.remote_database.RemoteDatabaseAPI;
-import com.studing.bd.crashroads.model.Route;
+import com.studing.bd.crashroads.model.Response;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableCompletableObserver;
@@ -20,8 +20,8 @@ public class Model {
         this.callback = callback;
     }
     
-    public void saveRoute(Route route){
-        RemoteDatabaseAPI.insert(route)
+    public void saveRoute(Response response){
+        RemoteDatabaseAPI.insert(response)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableCompletableObserver() {
@@ -35,10 +35,6 @@ public class Model {
                         callback.onError(e.getMessage());
                     }
                 });
-    }
-
-    public Route fetchRoute(){
-        return null;
     }
 
 }
