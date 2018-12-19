@@ -11,6 +11,7 @@ public class FirebaseInstant {
 
     private final static String REMOTE_USER_TABLE_NAME = "users";
     private final static String REMOTE_USER_PHOTO_TABLE_NAME = "users_photos";
+    private final static String REMOTE_ROUTE_NAME = "routes";
 
     public static FirebaseAuth auth() {
         return FirebaseAuth.getInstance();
@@ -32,6 +33,9 @@ public class FirebaseInstant {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    public static DatabaseReference routesReference() {
+        return FirebaseDatabase.getInstance().getReference().child(REMOTE_ROUTE_NAME);
+    }
 
 
 }

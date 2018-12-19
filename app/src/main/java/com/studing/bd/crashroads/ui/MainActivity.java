@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.ui.account_tab.AccountFragment;
+import com.studing.bd.crashroads.ui.map_tab.MapFragment;
 import com.studing.bd.crashroads.ui.settings_tab.SettingsFragment;
 
 import butterknife.BindView;
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     public void switchToProfileFragment() {
         FragmentTransaction  transaction = getFragmentManager().beginTransaction();
         Fragment fragment = new AccountFragment();
@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchToMapFragment() {
-
+        FragmentTransaction  transaction = getFragmentManager().beginTransaction();
+        Fragment fragment = new MapFragment();
+        transaction.replace(R.id.fragmentCont, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
