@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">CrashRoads</string>
-    <string name="title_home">DOdo</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_map">Map</string>
+    <string name="title_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
+
+    <string name="action_done">done</string>
+    <string name="action_cancel">cancel</string>
 
 
     <!-- Strings related to login -->
@@ -21,7 +24,17 @@
     <string name="action_google_sign_in">Sign in with Google</string>
     <string name="action_registration">Sign up</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="google_maps_web_services_key">AIzaSyCoBhi-d2AInViMMyZXdpJOtkpAbPNyP_4</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Strings for ratig dialog-->
+    <string name="rating_header">Rate selected road</string>
+    <string name="update_rating">Update</string>
+    <string name="bad_quality">terrible</string>
+    <string name="low_quality">low</string>
+    <string name="middle_quality">midle</string>
+    <string name="high_quality">high</string>
+    <string name="good_quality">perfect</string>
 </resources>

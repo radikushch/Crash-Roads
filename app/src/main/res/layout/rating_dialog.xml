@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rating_header"
+        android:textSize="@dimen/header_text_size"/>
+
+    <RatingBar
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/rate_bar_rl_margin"
+        android:layout_marginTop="@dimen/rate_bar_tb_margin"
+        android:layout_marginRight="@dimen/rate_bar_rl_margin"
+        android:layout_marginBottom="@dimen/rate_bar_tb_margin"
+        android:numStars="5"
+        android:stepSize="1.0" />
+    <TextView
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/rate_tv_tb_margin"/>
+    <Button
+        android:id="@+id/update_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/update_rating"/>
+</LinearLayout>
