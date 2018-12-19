@@ -1,6 +1,6 @@
 package com.studing.bd.crashroads.database.remote_database;
 
-import com.studing.bd.crashroads.model.Response;
+import com.studing.bd.crashroads.model.Route;
 import com.studing.bd.crashroads.model.User;
 
 import io.reactivex.Completable;
@@ -13,10 +13,10 @@ public class RemoteDatabaseAPI {
                 .addOnFailureListener(emitter::onError));
     }
 
-    public static Completable insert(Response response) {
+    public static Completable insert(Route route) {
         return Completable.create(emitter -> FirebaseInstant.routesReference()
                 .push()
-                .setValue(response)
+                .setValue(route)
                 .addOnSuccessListener(aVoid -> emitter.onComplete())
                 .addOnFailureListener(emitter::onError));
     }

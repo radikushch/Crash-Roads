@@ -9,15 +9,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @IgnoreExtraProperties
-public class Response implements Serializable {
+public class Route implements Serializable {
 
     private String uid;
-    private ArrayList<LatLng> route;
+    private ArrayList<LatLng> points;
     private int mark;
     private long time;
 
-    public Response(){
-        route = new ArrayList<>();
+    public Route(){
+        points = new ArrayList<>();
         uid = FirebaseInstant.user().getUid();
     }
 
@@ -30,15 +30,19 @@ public class Response implements Serializable {
     }
 
     public ArrayList<LatLng> getRoute() {
-        return route;
+        return points;
     }
 
     public void setRoute(ArrayList<LatLng> route) {
-        this.route = route;
+        this.points = route;
     }
 
     public void setMark(int mark) {
         this.mark = mark;
+    }
+
+    public int getMark() {
+        return mark;
     }
 
     public long getTime() {
@@ -50,18 +54,16 @@ public class Response implements Serializable {
     }
 
     public void addPoint(LatLng newCoordinate){
-        route.add(newCoordinate);
+        points.add(newCoordinate);
     }
 
     public boolean removePoint(){
-        if(route.size() == 0){
+        if(points.size() == 0){
             return false;
         }
-        route.remove(route.size() - 1);
+        points.remove(points.size() - 1);
         return true;
     }
 
-    public int getMark() {
-        return mark;
-    }
+
 }

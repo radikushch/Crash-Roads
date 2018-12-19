@@ -3,6 +3,7 @@ package com.studing.bd.crashroads;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.telephony.TelephonyManager;
 
 import com.studing.bd.crashroads.model.RouteQuality;
@@ -27,11 +28,6 @@ public class Utils {
 
     public static boolean isPasswordCorrect(String password1, String password2) {
         return password1.equals(password2);
-    }
-
-    public static String getDateStamp() {
-        Date date = new Date();
-        return String.valueOf(date.getTime());
     }
 
     public static byte[] bitmapToArray(Bitmap userPhotoBitmap) {
@@ -73,6 +69,27 @@ public class Utils {
     }
 
     public static int convertRouteQuality(RouteQuality quality) {
+        if(quality.equals(RouteQuality.Low)) return 1;
+        if(quality.equals(RouteQuality.Bad)) return 2;
+        if(quality.equals(RouteQuality.Medium)) return 3;
+        if(quality.equals(RouteQuality.Good)) return 4;
+        if(quality.equals(RouteQuality.High)) return 5;
         return 0;
+    }
+
+    public static int getPolylineColor(int rating) {
+        switch(rating){
+            case 1:
+                return Color.RED;
+            case 2:
+                return Color.YELLOW;
+            case 3:
+                return Color.YELLOW;
+            case 4:
+                return Color.GREEN;
+            case 5:
+                return Color.GREEN;
+        }
+        return Color.YELLOW;
     }
 }
