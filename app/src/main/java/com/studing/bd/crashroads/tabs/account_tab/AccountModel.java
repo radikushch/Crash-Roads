@@ -1,9 +1,15 @@
 package com.studing.bd.crashroads.tabs.account_tab;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.studing.bd.crashroads.R;
 import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
 import com.studing.bd.crashroads.database.remote_database.RemoteDatabaseAPI;
@@ -20,20 +26,24 @@ import io.reactivex.schedulers.Schedulers;
 public class AccountModel {
     private static final String TAG = "MyFragment";
 
-
     public interface OnUpdateCallback {
         void onUpdate(User newUSer);
         void onError(String message);
     }
 
     private OnUpdateCallback callback;
+    private Callback photoCallback;
 
-    public AccountModel(OnUpdateCallback callback) {
+    public AccountModel(OnUpdateCallback callback, Callback photoCallback) {
         this.callback = callback;
+        this.photoCallback = photoCallback;
     }
 
     public void loadPhoto(Uri uri, CircleImageView photoImageView) {
-        Picasso.get().load(uri).into(photoImageView);
+        Picasso.get()
+                .load(uri)
+                .placeholder(R.drawable.ic_action_face)
+                .into(photoImageView, photoCallback);
     }
 
     public void updateUserData(User user) {

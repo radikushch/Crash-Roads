@@ -3,21 +3,27 @@ package com.studing.bd.crashroads.tabs.account_tab;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.squareup.picasso.Callback;
 import com.studing.bd.crashroads.Utils;
 import com.studing.bd.crashroads.model.CurrentUser;
 import com.studing.bd.crashroads.model.User;
 import com.studing.bd.crashroads.ui.account_tab.IAccountFragment;
 
+import java.util.Arrays;
+
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import okhttp3.internal.Util;
 
-public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdateCallback {
+public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdateCallback, Callback {
 
+    private static final String TAG = "image_debug";
     private IAccountFragment accountFragment;
     private Bundle viewState;
     private static final String SELECT_PHOTO_ACTION = "Select Picture";
@@ -25,7 +31,7 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
 
     public AccountPresenter(IAccountFragment accountFragment) {
         this.accountFragment = accountFragment;
-        accountModel = new AccountModel(this);
+        accountModel = new AccountModel(this, this);
         viewState = new Bundle();
     }
 
@@ -92,5 +98,15 @@ public class AccountPresenter implements IAccountPresenter, AccountModel.OnUpdat
     @Override
     public void onError(String message) {
         accountFragment.handleError(message);
+    }
+
+    @Override
+    public void onSuccess() {
+        CurrentUser.get().imageByte = Utils.bitmapToArray(accountFragment.getUserPhotoBitmap());
+    }
+
+    @Override
+    public void onError(Exception e) {
+        accountFragment.handleError(e.getMessage());
     }
 }
