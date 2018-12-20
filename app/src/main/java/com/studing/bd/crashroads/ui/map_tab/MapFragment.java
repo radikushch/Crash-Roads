@@ -38,6 +38,7 @@ import butterknife.OnClick;
  */
 public class MapFragment extends Fragment implements IMapFragment {
 
+    @BindView(R.id.add_route_fab) FloatingActionButton addRouteFab;
     @BindView(R.id.action_done) Button saveRouteButton;
     @BindView(R.id.action_cancel) Button cancelRouteButton;
     @BindView(R.id.map) MapView mapView;
@@ -56,6 +57,7 @@ public class MapFragment extends Fragment implements IMapFragment {
 
     @OnClick(R.id.add_route_fab)
     public void addRouteButtonClicked() {
+        addRouteFab.setVisibility(View.GONE);
         saveRouteButton.setVisibility(View.VISIBLE);
         cancelRouteButton.setVisibility(View.VISIBLE);
         mapPresenter.enableRouteMarking();
@@ -63,9 +65,16 @@ public class MapFragment extends Fragment implements IMapFragment {
 
     @OnClick(R.id.action_done)
     public void saveRouteButtonClicked() {
+        addRouteFab.setVisibility(View.VISIBLE);
         saveRouteButton.setVisibility(View.GONE);
         cancelRouteButton.setVisibility(View.GONE);
         mapPresenter.disableRouteMarking();
+    }
+
+    @OnClick(R.id.action_cancel)
+    public void cancelRouteButtonClicked() {
+        addRouteFab.setVisibility(View.VISIBLE);
+        mapPresenter.removeAllPolylines();
     }
 
     @Override
@@ -81,6 +90,13 @@ public class MapFragment extends Fragment implements IMapFragment {
     @Override
     public Context context() {
         return getActivity();
+    }
+
+    @Override
+    public void setFabEnable() {
+        addRouteFab.setVisibility(View.VISIBLE);
+        saveRouteButton.setVisibility(View.GONE);
+        cancelRouteButton.setVisibility(View.GONE);
     }
 
     @Override

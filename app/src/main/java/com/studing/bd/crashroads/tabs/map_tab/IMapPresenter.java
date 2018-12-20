@@ -7,4 +7,6 @@ public interface IMapPresenter {
     void disableRouteMarking();
 
     void saveRoute(int rating);
+
+    void removeAllPolylines();
 }

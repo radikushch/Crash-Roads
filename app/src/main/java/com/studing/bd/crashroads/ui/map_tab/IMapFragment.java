@@ -13,4 +13,6 @@ public interface IMapFragment {
     MapView getMapView();
 
     Context context();
+
+    void setFabEnable();
 }

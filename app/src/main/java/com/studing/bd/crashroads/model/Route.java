@@ -7,12 +7,13 @@ import com.studing.bd.crashroads.database.remote_database.FirebaseInstant;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 @IgnoreExtraProperties
 public class Route implements Serializable {
 
     private String uid;
-    private ArrayList<LatLng> points;
+    private List<LatLng> points;
     private int mark;
     private long time;
 
@@ -29,11 +30,11 @@ public class Route implements Serializable {
         return uid;
     }
 
-    public ArrayList<LatLng> getRoute() {
+    public List<LatLng> getRoute() {
         return points;
     }
 
-    public void setRoute(ArrayList<LatLng> route) {
+    public void setRoute(List<LatLng> route) {
         this.points = route;
     }
 
@@ -65,5 +66,14 @@ public class Route implements Serializable {
         return true;
     }
 
-
+    @Override
+    public String toString() {
+        return uid +
+                "\n" +
+                mark +
+                "\n" +
+                time +
+                "\n" +
+                points.size();
+    }
 }

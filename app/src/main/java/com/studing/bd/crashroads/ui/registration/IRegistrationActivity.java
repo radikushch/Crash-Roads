@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 
 import com.studing.bd.crashroads.ErrorHandler;
-import com.studing.bd.crashroads.model.Gender;
 
 public interface IRegistrationActivity extends ErrorHandler {
     String getEmail();
